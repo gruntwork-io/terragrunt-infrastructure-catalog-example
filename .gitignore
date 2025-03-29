@@ -1,0 +1,27 @@
+# Terraform/OpenTofu
+.terraform
+terraform.tfvars
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
+# OS X
+.history
+.DS_Store
+
+# IntelliJ
+.idea_modules
+*.iml
+*.iws
+*.ipr
+.idea/
+build/
+*/build/
+out/
+
+# Ignore Terraform/OpenTofu lock files, as we want to test the Terraform code in these repos with the latest provider
+# versions.
+.terraform.lock.hcl
+
+# Lambda deployment packages
+*.zip

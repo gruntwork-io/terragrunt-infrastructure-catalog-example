@@ -56,7 +56,7 @@ resource "aws_security_group" "service" {
 }
 
 module "allow_outbound_all" {
-  source = "../modules/sg-rule"
+  source = "../sg-rule"
 
   security_group_id = aws_security_group.service.id
   type              = "egress"
@@ -67,7 +67,7 @@ module "allow_outbound_all" {
 }
 
 module "allow_inbound_on_container_port" {
-  source = "../modules/sg-rule"
+  source = "../sg-rule"
 
   security_group_id        = aws_security_group.service.id
   from_port                = var.container_port
@@ -159,7 +159,7 @@ resource "aws_security_group" "alb" {
 }
 
 module "alb_allow_http_inbound" {
-  source = "../modules/sg-rule"
+  source = "../sg-rule"
 
   security_group_id = aws_security_group.alb.id
   from_port         = var.alb_port
@@ -168,7 +168,7 @@ module "alb_allow_http_inbound" {
 }
 
 module "alb_allow_all_outbound" {
-  source = "../modules/sg-rule"
+  source = "../sg-rule"
 
   security_group_id = aws_security_group.alb.id
   type              = "egress"

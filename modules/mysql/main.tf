@@ -28,7 +28,7 @@ resource "aws_security_group" "db" {
 }
 
 module "allow_outbound_all" {
-  source = "../modules/sg-rule"
+  source = "../sg-rule"
 
   security_group_id = aws_security_group.db.id
   type              = "egress"

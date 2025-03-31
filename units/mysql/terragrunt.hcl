@@ -21,5 +21,5 @@ inputs = {
 
   # Optional inputs
   skip_final_snapshot = try(values.skip_final_snapshot, null)
-  engine_version = try(values.engine_version, null)
+  engine_version      = try(values.engine_version, null)
 }

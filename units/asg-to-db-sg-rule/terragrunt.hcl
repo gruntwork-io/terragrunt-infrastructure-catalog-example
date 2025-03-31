@@ -11,24 +11,24 @@ terraform {
 }
 
 dependency "service" {
-    config_path = "../service"
+  config_path = values.service_path
 
-    mock_outputs = {
-        asg_security_group_id = "sg-1234567890"
-    }
+  mock_outputs = {
+    asg_security_group_id = "sg-1234567890"
+  }
 }
 
 dependency "db" {
-    config_path = "../db"
+  config_path = values.db_path
 
-    mock_outputs = {
-        db_security_group_id = "sg-1234567890"
-    }
+  mock_outputs = {
+    db_security_group_id = "sg-1234567890"
+  }
 }
 
 inputs = {
-  security_group_id = dependency.db.outputs.db_security_group_id
-  from_port         = 3306
-  to_port           = 3306
+  security_group_id        = dependency.db.outputs.db_security_group_id
+  from_port                = 3306
+  to_port                  = 3306
   source_security_group_id = dependency.service.outputs.asg_security_group_id
 }

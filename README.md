@@ -15,7 +15,7 @@ This repository contains the following to help you get started on building out y
 
 ## OpenTofu Modules
 
-- [asg-alb-service](/modules/asg-alb-service): An example OpenTofu module that provisions an AWS Auto Scaling Group (ASG) with an
+- [ec2-asg-service](/modules/ec2-asg-service): An example OpenTofu module that provisions an AWS EC2 Auto Scaling Group (ASG) with an
   Application Load Balancer (ALB) in front of it. The EC2 instances that run in that ASG run a dirt-simple web server
   that simply returns "Hello, World", and a status code of 200, when you hit the ALB's URL.
 - [ecs-fargate-service](/modules/ecs-fargate-service): An example OpenTofu module that provisions an AWS Fargate service
@@ -27,7 +27,7 @@ This repository contains the following to help you get started on building out y
 
 ## Terragrunt Units
 
-- [asg-alb-service](/units/asg-alb-service): An example Terragrunt unit that provisions the [asg-alb-service](/modules/asg-alb-service) module.
+- [ec2-asg-service](/units/ec2-asg-service): An example Terragrunt unit that provisions the [ec2-asg-service](/modules/ec2-asg-service) module.
 - [ecs-fargate-service](/units/ecs-fargate-service): An example Terragrunt unit that provisions the [ecs-fargate-service](/modules/ecs-fargate-service) module.
 - [lambda-service](/units/lambda-service): An example Terragrunt unit that provisions the [lambda-service](/modules/lambda-service) module.
 - [mysql](/units/mysql): An example Terragrunt unit that provisions the [mysql](/modules/mysql) module.

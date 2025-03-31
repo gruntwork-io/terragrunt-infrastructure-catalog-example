@@ -1,6 +1,6 @@
 # ASG with ALB Example
 
-This is an example of how to use the [asg-alb-service module](/modules/asg-alb-service).
+This is an example of how to use the [ec2-asg-service module](/modules/ec2-asg-service).
 
 ## Quick start
 

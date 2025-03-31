@@ -11,14 +11,14 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestModuleAsgAlbService(t *testing.T) {
+func TestModuleEC2ASGService(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../examples/tofu/asg-alb-service",
+		TerraformDir:    "../../examples/tofu/ec2-asg-service",
 		TerraformBinary: "tofu",
 		Vars: map[string]interface{}{
-			"name": fmt.Sprintf("asg-alb-test-%s", random.UniqueId()),
+			"name": fmt.Sprintf("ec2-asg-test-%s", random.UniqueId()),
 		},
 	}
 

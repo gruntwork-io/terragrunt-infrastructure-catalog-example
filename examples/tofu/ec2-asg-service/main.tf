@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 module "service" {
-  source = "../../../modules/asg-alb-service"
+  source = "../../../modules/ec2-asg-service"
 
   name          = var.name
   instance_type = "t3.micro"
@@ -22,5 +22,5 @@ module "service" {
   max_size      = 4
   server_port   = 8080
   alb_port      = 80
-  user_data     = base64encode(templatefile("${get_terragrunt_dir()}/user-data.sh", { server_port = 8080 }))
+  user_data     = base64encode(templatefile("${path.module}/user-data.sh", { server_port = 8080 }))
 }

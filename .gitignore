@@ -1,3 +1,7 @@
+# Terragrunt
+.terragrunt-cache
+.terragrunt-stack
+
 # Terraform/OpenTofu
 .terraform
 terraform.tfvars

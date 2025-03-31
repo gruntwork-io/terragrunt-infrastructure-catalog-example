@@ -7,15 +7,15 @@ terraform {
   //
   // Assume that a user consuming this unit will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/ecs-fargate-service?ref=${value.version}"
+  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/ecs-fargate-service?ref=${values.version}"
 }
 
 inputs = {
-  name                  = value.name
-  container_definitions = value.container_definitions
-  desired_count         = value.desired_count
-  cpu                   = value.cpu
-  memory                = value.memory
-  container_port        = value.container_port
-  alb_port              = value.alb_port
+  name                  = values.name
+  container_definitions = values.container_definitions
+  desired_count         = values.desired_count
+  cpu                   = values.cpu
+  memory                = values.memory
+  container_port        = values.container_port
+  alb_port              = values.alb_port
 }

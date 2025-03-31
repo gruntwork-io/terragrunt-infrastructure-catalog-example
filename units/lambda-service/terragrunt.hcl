@@ -7,19 +7,19 @@ terraform {
   //
   // Assume that a user consuming this unit will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/lambda-service?ref=${value.version}"
+  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/lambda-service?ref=${values.version}"
 }
 
 inputs = {
   # Required inputs
-  name       = value.name
-  runtime    = value.runtime
-  source_dir = value.source_dir
-  handler    = value.handler
-  route_key  = value.route_key
-  zip_file   = value.zip_file
+  name       = values.name
+  runtime    = values.runtime
+  source_dir = values.source_dir
+  handler    = values.handler
+  route_key  = values.route_key
+  zip_file   = values.zip_file
 
   # Optional inputs
-  memory  = try(value.memory, null)
-  timeout = try(value.timeout, null)
+  memory  = try(values.memory, null)
+  timeout = try(values.timeout, null)
 }

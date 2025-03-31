@@ -11,14 +11,14 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestLambdaService(t *testing.T) {
+func TestModuleAsgAlbService(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../examples/lambda-service",
+		TerraformDir:    "../../examples/tofu/asg-alb-service",
 		TerraformBinary: "tofu",
 		Vars: map[string]interface{}{
-			"name": fmt.Sprintf("lambda-service-test-%s", random.UniqueId()),
+			"name": fmt.Sprintf("asg-alb-test-%s", random.UniqueId()),
 		},
 	}
 
@@ -26,6 +26,6 @@ func TestLambdaService(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	url := terraform.Output(t, terraformOptions, "api_endpoint")
-	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 30, 5*time.Second)
+	url := terraform.Output(t, terraformOptions, "url")
+	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World", 30, 5*time.Second)
 }

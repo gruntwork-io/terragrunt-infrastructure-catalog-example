@@ -13,17 +13,11 @@ provider "aws" {
   region = var.aws_region
 }
 
-module "mysql" {
-  source = "../../modules/mysql"
+module "s3_bucket" {
+  source = "../../../modules/s3-bucket"
 
-  name              = var.name
-  instance_class    = "db.t3.micro"
-  allocated_storage = 5
-  storage_type      = "standard"
-
-  master_username = var.master_username
-  master_password = var.master_password
+  name = var.name
 
   # Do NOT copy this into product code. We only set this param to true here so that the automated tests can clean up.
-  skip_final_snapshot = true
+  force_destroy = true
 }

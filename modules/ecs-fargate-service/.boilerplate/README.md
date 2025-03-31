@@ -1,7 +1,7 @@
 # Terragrunt scaffold custom template example
 
 This is an example of how to create a custom [boilerplate](https://github.com/gruntwork-io/boilerplate) template that
-will be used automatically for code generation when this module is used in [Terragrunt 
+will be used automatically for code generation when this module is used in [Terragrunt
 scaffolding](https://terragrunt.gruntwork.io/docs/features/scaffold/).
 
 - You can define input variables and other configuration in `boilerplate.yml`. E.g., This example defines a variable

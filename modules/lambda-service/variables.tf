@@ -27,6 +27,11 @@ variable "route_key" {
   type        = string
 }
 
+variable "zip_file" {
+  description = "The path to the zip file containing the Lambda function code"
+  type        = string
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL VARIABLES
 # ---------------------------------------------------------------------------------------------------------------------

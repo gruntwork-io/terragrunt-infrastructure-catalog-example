@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -10,14 +9,18 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestS3Bucket(t *testing.T) {
+func TestModuleMySQL(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../examples/s3-bucket",
+		TerraformDir:    "../../examples/tofu/mysql",
 		TerraformBinary: "tofu",
 		Vars: map[string]interface{}{
-			"name": fmt.Sprintf("terragrunt-infrastructure-modules-examples-test-%s", strings.ToLower(random.UniqueId())),
+			"name": fmt.Sprintf("mysqltest%s", random.UniqueId()),
+		},
+		EnvVars: map[string]string{
+			"TF_VAR_master_username": "username",
+			"TF_VAR_master_password": "password",
 		},
 	}
 

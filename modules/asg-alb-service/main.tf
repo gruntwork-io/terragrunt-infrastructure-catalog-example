@@ -1,14 +1,3 @@
-terraform {
-  required_version = ">= 1.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # CREATE THE ASG
 # ---------------------------------------------------------------------------------------------------------------------
@@ -47,7 +36,7 @@ resource "aws_launch_template" "webserver_example" {
   image_id               = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.asg.id]
-  user_data              = base64encode(templatefile("${path.module}/user-data.sh", { server_port = var.server_port }))
+  user_data              = var.user_data
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -47,5 +47,5 @@ variable "skip_final_snapshot" {
 variable "engine_version" {
   description = "The version of MySQL to run. https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html"
   type        = string
-  default     = "8.0.36"
+  default     = "8.4.4"
 }

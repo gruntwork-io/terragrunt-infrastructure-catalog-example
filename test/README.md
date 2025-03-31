@@ -11,16 +11,16 @@ test library called [Terratest](https://terratest.gruntwork.io/).
 
 1. Install [Go](https://go.dev/).
 2. Install [OpenTofu](https://opentofu.org/).
-3. Configure your [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html). 
+3. Configure your [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html).
 
 ### Run all the tests
 
 ```bash
-go test -v -timeout 60m
+go test -v -timeout 60m ./...
 ```
 
 ### Run a specific test
 
 ```bash
-go test -v -timeout 60m -run '<TEST_NAME>'
+go test -v -timeout 60m -run '<TEST_NAME>' ./...
 ```

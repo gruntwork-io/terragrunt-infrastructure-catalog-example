@@ -2,43 +2,44 @@
 
 # Example infrastructure-catalog for Terragrunt
 
-This repo, along with the [terragrunt-infrastructure-live-stacks-example 
-repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-stacks-example), offer a set of best practice
-infrastructure configurations for setting up a catalog for your infrastructure to be used in conjunction with
-Terragrunt.
+This repository, along with the [terragrunt-infrastructure-live-stacks-example repository](https://github.com/gruntwork-io/terragrunt-infrastructure-live-stacks-example), offer a set of best practice infrastructure configurations for setting up a catalog for your infrastructure.
 
 To use this repository, you'll want to make sure you have the following installed:
 
 - [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/)
 - [OpenTofu](https://opentofu.org/docs/intro/install/) (or [Terraform](https://developer.hashicorp.com/terraform/install))
 
-For background information, read the [getting started guide](https://terragrunt.gruntwork.io/docs/getting-started/overview/).
+For background information, read the [Getting Started Guide](https://terragrunt.gruntwork.io/docs/getting-started/overview/).
 
 This repository contains the following to help you get started on building out your own infrastructure catalog:
 
 ## OpenTofu Modules
 
-* [asg-alb-service](/modules/asg-alb-service): An example OpenTofu module that provisions an AWS Auto Scaling Group (ASG) with an
+- [asg-alb-service](/modules/asg-alb-service): An example OpenTofu module that provisions an AWS Auto Scaling Group (ASG) with an
   Application Load Balancer (ALB) in front of it. The EC2 instances that run in that ASG run a dirt-simple web server
   that simply returns "Hello, World", and a status code of 200, when you hit the ALB's URL.
-
-* [ecs-fargate-service](/modules/ecs-fargate-service): An example OpenTofu module that provisions an AWS Fargate service 
+- [ecs-fargate-service](/modules/ecs-fargate-service): An example OpenTofu module that provisions an AWS Fargate service
   for a containerized application.
-
-* [lambda-service](/modules/lambda-service): An example OpenTofu module that provisions an AWS Lambda function, and an API Gateway 
+- [lambda-service](/modules/lambda-service): An example OpenTofu module that provisions an AWS Lambda function, and an API Gateway
   to trigger the Lambda function.
+- [mysql](/modules/mysql): An example OpenTofu module that provisions a MySQL database using Relational Database Service (RDS).
+- [s3-bucket](/modules/s3-bucket): An example OpenTofu module that provisions an S3 bucket.
 
-* [mysql](/modules/mysql): An example OpenTofu module that provisions a MySQL database using Relational Database Service (RDS).
+## Terragrunt Units
 
-* [s3-bucket](/modules/s3-bucket): An example OpenTofu module that provisions an S3 bucket.
+- [asg-alb-service](/units/asg-alb-service): An example Terragrunt unit that provisions the [asg-alb-service](/modules/asg-alb-service) module.
+- [ecs-fargate-service](/units/ecs-fargate-service): An example Terragrunt unit that provisions the [ecs-fargate-service](/modules/ecs-fargate-service) module.
+- [lambda-service](/units/lambda-service): An example Terragrunt unit that provisions the [lambda-service](/modules/lambda-service) module.
+- [mysql](/units/mysql): An example Terragrunt unit that provisions the [mysql](/modules/mysql) module.
+- [s3-bucket](/units/s3-bucket): An example Terragrunt unit that provisions the [s3-bucket](/modules/s3-bucket) module.
 
-Note: This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If 
+Note: This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If
 you are interested in battle-tested, production-ready Terragrunt and OpenTofu/Terraform code, continuously updated and
 maintained by a team of subject matter experts, consider purchasing a subscription to the [Gruntwork IaC Library](https://www.gruntwork.io/platform/iac-library).
 
-## How do you use these modules?
+## How do you use these?
 
-To use a module, create a  `terragrunt.hcl` file that specifies the module you want to use in the `source` URL as well 
+To use a module, create a  `terragrunt.hcl` file that specifies the module you want to use in the `source` URL as well
 as values for the input variables of that module in the `inputs` block:
 
 ```hcl
@@ -54,15 +55,15 @@ inputs = {
 }
 ```
 
-(*Note: the double slash (`//`) in the `source` URL is intentional and required. It's part of Terraform and OpenTofu's 
+(*Note: the double slash (`//`) in the `source` URL is intentional and required. It's part of Terraform and OpenTofu's
 Git syntax for [module sources](https://www.terraform.io/docs/modules/sources.html).*)
 
-You then run [Terragrunt](https://github.com/gruntwork-io/terragrunt), and it will download the source code specified 
+You then run [Terragrunt](https://github.com/gruntwork-io/terragrunt), and it will download the source code specified
 in the `source` URL into a temporary folder, copy your `terragrunt.hcl` file into that folder, and run your Terraform /
-OpenTofu command in that folder: 
+OpenTofu command in that folder:
 
-```
-> terragrunt apply
+```bash
+$ terragrunt apply
 [terragrunt] Reading Terragrunt config file at terragrunt.hcl
 [terragrunt] Downloading Tofu configurations from git::git@github.com:gruntwork-io/terragrunt-infrastructure-modules-example.git//path/to/module?ref=<VERSION>
 [terragrunt] Copying files from . into .terragrunt-cache
@@ -70,12 +71,9 @@ OpenTofu command in that folder:
 [...]
 ```
 
-Check out the [terragrunt-infrastructure-live-example 
-repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) for examples and the [Keep your 
-code DRY documentation](https://github.com/gruntwork-io/terragrunt#keep-your-terraform-code-dry) for more info.
+Check out the [terragrunt-infrastructure-live-stacks-example repository](https://github.com/gruntwork-io/terragrunt-infrastructure-live-stacks-example) for examples and the [Getting Started Guide](https://terragrunt.gruntwork.io/docs/getting-started/overview/) for more info.
 
 ## How do you change a module?
-
 
 ### Local changes
 
@@ -83,15 +81,14 @@ Here is how to test out changes to a module locally:
 
 1. `git clone` this repo.
 1. Update the code as necessary.
-1. Go into the folder where you have the `terragrunt.hcl` file that uses a module from this repo (preferably for a 
+1. Go into the folder where you have the `terragrunt.hcl` file that uses a module from this repo (preferably for a
    dev or staging environment!).
 1. Run `terragrunt plan --terragrunt-source <LOCAL_PATH>`, where `LOCAL_PATH` is the path to your local checkout of
-   the module code. 
-1. If the plan looks good, run `terragrunt apply --terragrunt-source <LOCAL_PATH>`.   
+   the module code.
+1. If the plan looks good, run `terragrunt apply --terragrunt-source <LOCAL_PATH>`.
 
-Using the `--terragrunt-source` parameter (or `TERRAGRUNT_SOURCE` environment variable) allows you to do rapid, 
+Using the `--terragrunt-source` parameter (or `TERRAGRUNT_SOURCE` environment variable) allows you to do rapid,
 iterative, make-a-change-and-rerun development.
-
 
 ### Releasing a new version
 
@@ -103,13 +100,14 @@ When you're done testing the changes locally, here is how you release a new vers
     1. Using GitHub: Go to the [releases page](/releases) and click "Draft a new release".
     1. Using Git:
 
-    ```
+    ```bash
     git tag -a v0.0.2 -m "tag message"
     git push --follow-tags
     ```
+
 1. Now you can use the new Git tag (e.g. `v0.0.2`) in the `ref` attribute of the `source` URL in `terragrunt.hcl`.
 1. Run `terragrunt plan`.
-1. If the plan looks good, run `terragrunt apply`.   
+1. If the plan looks good, run `terragrunt apply`.
 
 ## Folder structure
 
@@ -119,44 +117,44 @@ This repo uses the following "standard" folder structure:
 - `examples`: Put example code into this folder. These are examples of how to use the modules in the `modules` folder.
   This is useful both for manual testing (you can manually run `tofu apply` on these examples) and automated testing
   (as per the tests in the `test` folder, as described next).
-- `test`: Put test code into this folder. These should be automated tests for the examples in the `examples` folder. 
+- `test`: Put test code into this folder. These should be automated tests for the examples in the `examples` folder.
 
 ## Monorepo vs. polyrepo
 
-This repo is an example of a *monorepo*, where you have multiple modules in a single repository. There are benefits and 
-drawbacks to using a monorepo vs. using a *polyrepo* - one module per repository. Which you choose depends on your 
-tooling, how you build/test Terraform/OpenTofu modules, and so on. Regardless, the 
-[live repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) will consume the modules in the 
+This repo is an example of a *monorepo*, where you have multiple modules in a single repository. There are benefits and
+drawbacks to using a monorepo vs. using a *polyrepo* - one module per repository. Which you choose depends on your
+tooling, how you build/test Terraform/OpenTofu modules, and so on. Regardless, the
+[live repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) will consume the modules in the
 same way: a reference to a Git release tag in a `terragrunt.hcl` file.
 
 ### Advantages of a monorepo for Terraform/OpenTofu modules
 
-* **Easier to make global changes across the entire codebase.** For example, applying a critical security fix or upgrading everything to a new version of Terraform/OpenTofu can happen in one logical commit.
-* **Easier to search across the entire codebase.** You can search through all the module code using a standard text editor or file searching utility just with one repo checked out.
-* **Simpler continuous integration across modules.** All your code is tested and versioned together. This reduces the chance of _late integration_ issues arising from out-of-date module-dependencies.
-* **Single repo and build pipeline to manage.** Permissions, pull requests, etc. all happen in one spot. Everything validates and tests together so you can see any failures in one spot.
+- **Easier to make global changes across the entire codebase.** For example, applying a critical security fix or upgrading everything to a new version of Terraform/OpenTofu can happen in one logical commit.
+- **Easier to search across the entire codebase.** You can search through all the module code using a standard text editor or file searching utility just with one repo checked out.
+- **Simpler continuous integration across modules.** All your code is tested and versioned together. This reduces the chance of _late integration_ issues arising from out-of-date module-dependencies.
+- **Single repo and build pipeline to manage.** Permissions, pull requests, etc. all happen in one spot. Everything validates and tests together so you can see any failures in one spot.
 
 ### Disadvantages of a monorepo for Terraform/OpenTofu modules
 
-* **Harder to keep changes isolated.** While you're modifying module `foo`, you also have to think through whether this will affect module `bar`.
-* **Ever increasing testing time.** The simple approach is to run all tests after every commit, but as the monorepo grows, this gets slower and slower (and more brittle).
-* **No dependency management system.** To only run a subset of the tests or otherwise validate only changed modules, you need a way to tell which modules were affected by which commits. Unfortunately, Terraform/OpenTofu has no first-class dependency management system, so there's no way to know that a code change in a file in module `foo` won't affect module `bar`. You have to build custom tooling that figures this out based on heuristics (brittle) or try to integrate Terraform with dependency management / monorepo tooling like [bazel](https://bazel.build/) (lots of work).
-* **Doesn't work with the Terraform Private Registry.** Private registries (part of Terraform Enterprise and Terraform Cloud) require one module per repo.
-* **No feature toggle support.** Terraform/OpenTofu doesn't support feature toggles, which are often critical for making large scale changes in a monorepo.
-* **Release versions change even if module code didn't change.** A new "release" of a monorepo involves tagging the repo with a new version. Even if only one module changed, all the modules effectively get a new version.
+- **Harder to keep changes isolated.** While you're modifying module `foo`, you also have to think through whether this will affect module `bar`.
+- **Ever increasing testing time.** The simple approach is to run all tests after every commit, but as the monorepo grows, this gets slower and slower (and more brittle).
+- **No dependency management system.** To only run a subset of the tests or otherwise validate only changed modules, you need a way to tell which modules were affected by which commits. Unfortunately, Terraform/OpenTofu has no first-class dependency management system, so there's no way to know that a code change in a file in module `foo` won't affect module `bar`. You have to build custom tooling that figures this out based on heuristics (brittle) or try to integrate Terraform with dependency management / monorepo tooling like [bazel](https://bazel.build/) (lots of work).
+- **Doesn't work with the Terraform Private Registry.** Private registries (part of Terraform Enterprise and Terraform Cloud) require one module per repo.
+- **No feature toggle support.** Terraform/OpenTofu doesn't support feature toggles, which are often critical for making large scale changes in a monorepo.
+- **Release versions change even if module code didn't change.** A new "release" of a monorepo involves tagging the repo with a new version. Even if only one module changed, all the modules effectively get a new version.
 
 ### Advantages of one-repo-per-module
 
-* **Easier to keep changes isolated.** You mostly only have to think about the one module/repo you're changing rather than how it affects other modules.
-* **Works with the Terraform Private Registry.** Private registries (part of Terraform Enterprise and Terraform Cloud) can list modules in a one-repo-per-module format if you [follow their module structure](https://www.terraform.io/docs/modules/index.html#standard-module-structure) and [repository naming conventions](https://www.terraform.io/docs/registry/modules/publish.html#requirements).
-* **Testing is faster and isolated.** When you run tests, it's just tests for this one module, so no extra tooling is necessary to keep tests fast.
-* **Easier to detect individual module changes.** With only one module in a repo, there's no guessing at which module changed as releases are published.
+- **Easier to keep changes isolated.** You mostly only have to think about the one module/repo you're changing rather than how it affects other modules.
+- **Works with the Terraform Private Registry.** Private registries (part of Terraform Enterprise and Terraform Cloud) can list modules in a one-repo-per-module format if you [follow their module structure](https://www.terraform.io/docs/modules/index.html#standard-module-structure) and [repository naming conventions](https://www.terraform.io/docs/registry/modules/publish.html#requirements).
+- **Testing is faster and isolated.** When you run tests, it's just tests for this one module, so no extra tooling is necessary to keep tests fast.
+- **Easier to detect individual module changes.** With only one module in a repo, there's no guessing at which module changed as releases are published.
 
 ### Disdvantages of one-repo-per-module
 
-* **Harder to make global changes.** Changes across repos require lots of checkouts, separate commits and pull requests, and an updated release per module. This may need to be done in a specific order based on depedency graphs. This may take a lot of time in a large organization, which is problematic when dealing with security issues.
-* **Harder to search across the codebase.** Searches require checking out all the repos or having tooling (e.g., GitHub or Azure DevOps) that allows searching across repositories remotely.
-* **No continuous integration across modules.** You might make a change in your module and the teams that depend on that module might not consume that change for a long time. When they do, they may find an incompatibility or other issue that could be hard to fix given the amount of time that's passed.
-* **Many repos and builds to manage.** Permissions, pull requests, build pipelines, test failures, etc. get managed in several places.
-* **Potential dependency graph problems.** It is possible to run into issues like "diamond dependencies" when using many modules together, though Terraform/OpenTofu can avoid many of these issues since it can run different versions of the same dependency at the same time.
-* **Slower initialization.** Terraform/OpenTofu downloads each dependency from scratch, so if one repo depends on modules from many other repos — or even the exact same module from the same repo, but used many times in your code — it will download that module every time it's used rather than just once.
+- **Harder to make global changes.** Changes across repos require lots of checkouts, separate commits and pull requests, and an updated release per module. This may need to be done in a specific order based on depedency graphs. This may take a lot of time in a large organization, which is problematic when dealing with security issues.
+- **Harder to search across the codebase.** Searches require checking out all the repos or having tooling (e.g., GitHub or Azure DevOps) that allows searching across repositories remotely.
+- **No continuous integration across modules.** You might make a change in your module and the teams that depend on that module might not consume that change for a long time. When they do, they may find an incompatibility or other issue that could be hard to fix given the amount of time that's passed.
+- **Many repos and builds to manage.** Permissions, pull requests, build pipelines, test failures, etc. get managed in several places.
+- **Potential dependency graph problems.** It is possible to run into issues like "diamond dependencies" when using many modules together, though Terraform/OpenTofu can avoid many of these issues since it can run different versions of the same dependency at the same time.
+- **Slower initialization.** Terraform/OpenTofu downloads each dependency from scratch, so if one repo depends on modules from many other repos — or even the exact same module from the same repo, but used many times in your code — it will download that module every time it's used rather than just once.

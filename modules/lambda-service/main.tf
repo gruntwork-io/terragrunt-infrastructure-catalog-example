@@ -1,18 +1,3 @@
-terraform {
-  required_version = ">= 1.1"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-    archive = {
-      source  = "hashicorp/archive"
-      version = "~> 2.0"
-    }
-  }
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # CREATE THE LAMBDA FUNCTION
 # ---------------------------------------------------------------------------------------------------------------------
@@ -22,8 +7,8 @@ resource "aws_lambda_function" "function" {
   role          = aws_iam_role.lambda.arn
 
   package_type     = "Zip"
-  filename         = data.archive_file.source_code.output_path
-  source_code_hash = data.archive_file.source_code.output_base64sha256
+  filename         = var.zip_file
+  source_code_hash = filesha256(var.zip_file)
 
   runtime = var.runtime
   handler = var.handler
@@ -49,16 +34,6 @@ data "aws_iam_policy_document" "policy" {
       identifiers = ["lambda.amazonaws.com"]
     }
   }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ZIP UP THE SOURCE CODE
-# ---------------------------------------------------------------------------------------------------------------------
-
-data "archive_file" "source_code" {
-  type        = "zip"
-  source_dir  = var.source_dir
-  output_path = "${path.module}/${var.name}.zip"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 module "ecs_service" {
-  source = "../../modules/ecs-fargate-service"
+  source = "../../../modules/ecs-fargate-service"
 
   name = var.name
 

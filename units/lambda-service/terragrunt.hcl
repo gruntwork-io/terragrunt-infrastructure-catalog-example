@@ -14,6 +14,7 @@ inputs = {
   source_dir = value.source_dir
   handler    = value.handler
   route_key  = value.route_key
+  zip_file   = value.zip_file
 
   # Optional inputs
   memory  = try(value.memory, null)

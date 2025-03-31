@@ -14,4 +14,6 @@ inputs = {
   max_size      = value.max_size
   server_port   = value.server_port
   alb_port      = value.alb_port
+
+  user_data = base64encode(templatefile("${get_terragrunt_dir()}/user-data.sh", { server_port = value.server_port }))
 }

@@ -11,11 +11,11 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestEcsFargateService(t *testing.T) {
+func TestModuleECSFargateService(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../examples/ecs-fargate-service",
+		TerraformDir:    "../../examples/tofu/ecs-fargate-service",
 		TerraformBinary: "tofu",
 		Vars: map[string]interface{}{
 			"name": fmt.Sprintf("ecs-fargate-service-test-%s", random.UniqueId()),

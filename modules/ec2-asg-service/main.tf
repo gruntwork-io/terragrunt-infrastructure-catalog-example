@@ -48,11 +48,11 @@ resource "aws_security_group" "asg" {
   name = "${var.name}-asg"
 }
 
-resource "aws_security_group_rule" "asg_allow_http_inbound" {
-  type                     = "ingress"
+module "asg_allow_http_inbound" {
+  source = "../modules/sg-rule"
+
   from_port                = var.server_port
   to_port                  = var.server_port
-  protocol                 = "tcp"
   security_group_id        = aws_security_group.asg.id
   source_security_group_id = aws_security_group.alb.id
 }
@@ -135,20 +135,22 @@ resource "aws_security_group" "alb" {
   name = "${var.name}-alb"
 }
 
-resource "aws_security_group_rule" "alb_allow_http_inbound" {
-  type              = "ingress"
+module "alb_allow_http_inbound" {
+  source = "../modules/sg-rule"
+
   from_port         = var.alb_port
   to_port           = var.alb_port
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.alb.id
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "alb_allow_all_outbound" {
+module "alb_allow_all_outbound" {
+  source = "../modules/sg-rule"
+
+  security_group_id = aws_security_group.alb.id
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.alb.id
 }

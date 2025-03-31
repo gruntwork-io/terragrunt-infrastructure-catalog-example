@@ -9,3 +9,7 @@ output "db_name" {
 output "arn" {
   value = aws_db_instance.mysql.arn
 }
+
+output "db_security_group_id" {
+  value = aws_security_group.db.id
+}

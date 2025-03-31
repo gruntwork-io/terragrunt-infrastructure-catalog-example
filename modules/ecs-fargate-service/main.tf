@@ -25,7 +25,7 @@ resource "aws_ecs_service" "service" {
 
   network_configuration {
     subnets          = data.aws_subnets.default.ids
-    security_groups  = [aws_security_group.ecs_task_security_group.id]
+    security_groups  = [aws_security_group.service.id]
     assign_public_ip = true
   }
 
@@ -50,13 +50,15 @@ resource "aws_ecs_task_definition" "service" {
 # CREATE A SECURITY GROUP FOR THE ECS SERVICE
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_security_group" "ecs_task_security_group" {
+resource "aws_security_group" "service" {
   name   = "${var.name}-task-access"
   vpc_id = data.aws_vpc.default.id
 }
 
-resource "aws_security_group_rule" "allow_outbound_all" {
-  security_group_id = aws_security_group.ecs_task_security_group.id
+module "allow_outbound_all" {
+  source = "../modules/sg-rule"
+
+  security_group_id = aws_security_group.service.id
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -64,12 +66,12 @@ resource "aws_security_group_rule" "allow_outbound_all" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "allow_inbound_on_container_port" {
-  security_group_id        = aws_security_group.ecs_task_security_group.id
-  type                     = "ingress"
+module "allow_inbound_on_container_port" {
+  source = "../modules/sg-rule"
+
+  security_group_id        = aws_security_group.service.id
   from_port                = var.container_port
   to_port                  = var.container_port
-  protocol                 = "tcp"
   source_security_group_id = aws_security_group.alb.id
 }
 
@@ -156,20 +158,22 @@ resource "aws_security_group" "alb" {
   name = "${var.name}-alb"
 }
 
-resource "aws_security_group_rule" "alb_allow_http_inbound" {
-  type              = "ingress"
+module "alb_allow_http_inbound" {
+  source = "../modules/sg-rule"
+
+  security_group_id = aws_security_group.alb.id
   from_port         = var.alb_port
   to_port           = var.alb_port
-  protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.alb.id
 }
 
-resource "aws_security_group_rule" "alb_allow_all_outbound" {
+module "alb_allow_all_outbound" {
+  source = "../modules/sg-rule"
+
+  security_group_id = aws_security_group.alb.id
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.alb.id
 }

@@ -37,6 +37,9 @@ resource "aws_launch_template" "webserver_example" {
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.asg.id]
   user_data              = var.user_data
+  iam_instance_profile {
+    name = aws_iam_instance_profile.instance_profile.name
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -66,6 +69,62 @@ module "asg_allow_all_outbound" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# CREATE AN IAM ROLE FOR THE LAUNCH TEMPLATE
+# ---------------------------------------------------------------------------------------------------------------------
+
+data "aws_iam_policy_document" "assume_role_policy" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "role" {
+  name = var.name
+
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
+resource "aws_iam_role_policy" "policy" {
+  name = var.name
+  role = aws_iam_role.role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetEncryptionConfiguration"
+        ]
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "instance_profile" {
+  name = var.name
+  role = aws_iam_role.role.name
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

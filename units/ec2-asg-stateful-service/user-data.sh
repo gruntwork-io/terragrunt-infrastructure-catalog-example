@@ -7,6 +7,8 @@ set -e
 HOME=/root
 export HOME
 
+dnf install -y unzip
+
 curl -fsSL https://bun.sh/install | bash -s "bun-v1.2.8"
 
 ln -s /root/.bun/bin/bun /usr/local/bin/bun

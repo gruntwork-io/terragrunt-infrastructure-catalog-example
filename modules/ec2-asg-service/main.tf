@@ -25,7 +25,7 @@ resource "aws_autoscaling_group" "webserver_example" {
 
 # ---------------------------------------------------------------------------------------------------------------------
 # CREATE THE LAUNCH TEMPLATE
-# This defines what runs on each EC2 Instance in the ASG. To keep the example simple, we run a plain Ubuntu AMI and
+# This defines what runs on each EC2 Instance in the ASG. To keep the example simple, we run a plain Amazon Linux AMI and
 # configure a User Data scripts that runs a dirt-simple "Hello, World" web server. In real-world usage, you'd want to
 # package the web server code into a custom AMI (rather than shoving it into User Data) and pass in the ID of that AMI
 # as a variable.
@@ -33,7 +33,7 @@ resource "aws_autoscaling_group" "webserver_example" {
 
 resource "aws_launch_template" "webserver_example" {
   name_prefix            = var.name
-  image_id               = data.aws_ami.ubuntu.id
+  image_id               = data.aws_ami.amazon_linux.id
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.asg.id]
   user_data              = var.user_data

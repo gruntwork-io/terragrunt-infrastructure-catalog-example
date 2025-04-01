@@ -21,12 +21,12 @@ data "aws_subnet" "default" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# LOOK UP THE UBUNTU AMI ID
+# LOOK UP THE AMAZON LINUX AMI ID
 # ---------------------------------------------------------------------------------------------------------------------
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "amazon_linux" {
   most_recent = true
-  owners      = ["099720109477"] # Canonical
+  owners      = ["137112412989"] # Amazon
 
   filter {
     name   = "virtualization-type"
@@ -35,7 +35,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "architecture"
-    values = ["x86_64"]
+    values = ["arm64"]
   }
 
   filter {
@@ -45,6 +45,6 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["al2023-ami-*"]
   }
 }

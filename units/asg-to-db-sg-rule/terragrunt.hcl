@@ -1,3 +1,7 @@
+include "root" {
+  path = find_in_parent_folders("root.hcl")
+}
+
 terraform {
   // NOTE: Take note that this source here uses
   // a Git URL instead of a local path.

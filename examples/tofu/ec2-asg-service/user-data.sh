@@ -38,8 +38,8 @@ http {
     include /etc/nginx/conf.d/*.conf;
 
     server {
-        listen       8080;
-        listen       [::]:8080;
+        listen       ${server_port};
+        listen       [::]:${server_port};
         server_name  _;
         root         /usr/share/nginx/html;
 

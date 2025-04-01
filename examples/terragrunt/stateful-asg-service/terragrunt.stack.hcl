@@ -1,5 +1,10 @@
+locals {
+  db_username = "admin"
+  db_password = "password"
+}
+
 unit "service" {
-  source = "../../../units/ec2-asg-service"
+  source = "../../../units/ec2-asg-stateful-service"
 
   path = "service"
 
@@ -10,8 +15,13 @@ unit "service" {
     instance_type = "t4g.micro"
     min_size      = 2
     max_size      = 4
-    server_port   = 8080
+    server_port   = 3000
     alb_port      = 80
+
+    db_path = "../db"
+
+    db_username = local.db_username
+    db_password = local.db_password
   }
 }
 
@@ -30,8 +40,8 @@ unit "db" {
 
     # NOTE: This is only here to make it easier to spin up and tear down the stack.
     # Do not use any of these settings in production.
-    master_username     = "admin"
-    master_password     = "password"
+    master_username     = local.db_username
+    master_password     = local.db_password
     skip_final_snapshot = true
   }
 }

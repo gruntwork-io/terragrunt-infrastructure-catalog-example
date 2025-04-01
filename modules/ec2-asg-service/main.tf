@@ -57,6 +57,17 @@ module "asg_allow_http_inbound" {
   source_security_group_id = aws_security_group.alb.id
 }
 
+module "asg_allow_all_outbound" {
+  source = "../sg-rule"
+
+  security_group_id = aws_security_group.asg.id
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # CREATE AN ALB TO ROUTE TRAFFIC ACROSS THE ASG
 # ---------------------------------------------------------------------------------------------------------------------

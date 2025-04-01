@@ -18,5 +18,10 @@ inputs = {
   server_port   = values.server_port
   alb_port      = values.alb_port
 
-  user_data = base64encode(templatefile("${get_terragrunt_dir()}/user-data.sh", { server_port = values.server_port }))
+  user_data = base64encode(templatefile("${get_terragrunt_dir()}/user-data.sh", {
+    db_host     = values.db_host
+    db_username = values.db_username
+    db_password = values.db_password
+    db_name     = values.db_name
+  }))
 }

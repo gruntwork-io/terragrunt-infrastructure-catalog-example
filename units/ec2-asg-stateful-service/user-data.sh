@@ -1,49 +1,87 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -euo pipefail
+set -e
 
-dnf install -y unzip-6.0-57.amzn2023.0.2.aarch64
+# Set HOME to /root to avoid errors in
+# bun install.
+HOME=/root
+export HOME
 
 curl -fsSL https://bun.sh/install | bash -s "bun-v1.2.8"
 
-PATH="$HOME/.bun/bin:$PATH"
-export PATH
+ln -s /root/.bun/bin/bun /usr/local/bin/bun
+ln -s /root/.bun/bin/bunx /usr/local/bin/bunx
+
+cd /home/ec2-user
 
 mkdir app
 cd app
 
+cat <<'EOF' > .env
+DB_HOST=${db_host}
+DB_USER=${db_username}
+DB_PASSWORD=${db_password}
+DB_NAME=${db_name}
+EOF
+
 # Taken from https://bun.sh/guides/ecosystem/drizzle
 
 bun init -y
-bun add drizzle-orm@0.41.0
+bun add drizzle-orm@0.41.0 mysql2@3.14.0
 bun add -D drizzle-kit@0.30.6
 
-cat <<'EOF' > schema.ts
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+cat <<'EOF' > drizzle.config.ts
+import { defineConfig } from "drizzle-kit";
 
-export const movies = sqliteTable("movies", {
-  id: integer("id").primaryKey(),
-  title: text("name"),
-  releaseYear: integer("release_year"),
+export default defineConfig({
+  dialect: "mysql",
+  schema: "./src/schema.ts",
+  out: "./drizzle",
+
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 EOF
 
-bunx drizzle-kit generate --dialect sqlite --schema ./schema.ts
+cat <<'EOF' > schema.ts
+import { int, mysqlTable, serial, varchar } from 'drizzle-orm/mysql-core';
+
+export const movies = mysqlTable("movies", {
+  id: serial().primaryKey(),
+  title: varchar({ length: 255 }).notNull(),
+  releaseYear: int().notNull(),
+});
+EOF
+
+bunx drizzle-kit generate --dialect mysql --schema ./schema.ts
+
+# NOTE: This is only here because Drizzle has a bug where generated
+# migrations for MySQL are not idempotent. YMMV.
+# https://github.com/drizzle-team/drizzle-orm/issues/2815
+
+# shellcheck disable=SC2016
+sed -i 's/CREATE TABLE `movies`/CREATE TABLE IF NOT EXISTS `movies`/g' ./drizzle/*.sql
 
 cat <<'EOF' > db.ts
-import { drizzle } from "drizzle-orm/bun-sqlite";
-import { Database } from "bun:sqlite";
+import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "./schema";
 
-const sqlite = new Database("sqlite.db");
-export const db = drizzle({ client: sqlite , schema: schema });
+export const db = drizzle({ schema, mode: "default", connection: {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+}});
 EOF
 
 cat <<'EOF' > migrate.ts
-import { migrate } from "drizzle-orm/bun-sqlite/migrator";
+import { migrate } from "drizzle-orm/mysql2/migrator";
 import { db } from "./db";
 
-migrate(db, { migrationsFolder: "./drizzle" });
+await migrate(db, { migrationsFolder: "./drizzle" });
+process.exit();
 EOF
 
 bun run migrate.ts
@@ -51,6 +89,13 @@ bun run migrate.ts
 cat <<'EOF' > seed.ts
 import { db } from "./db";
 import * as schema from "./schema";
+
+const movies = await db.query.movies.findMany();
+
+if (movies.length > 0) {
+  console.log(`Movies table already seeded. Skipping...`);
+  process.exit();
+}
 
 await db.insert(schema.movies).values([
   {
@@ -68,6 +113,7 @@ await db.insert(schema.movies).values([
 ]);
 
 console.log(`Seeding complete.`);
+process.exit();
 EOF
 
 bun run seed.ts
@@ -99,4 +145,4 @@ Bun.serve({
 })
 EOF
 
-bun run index.ts
+nohup bun run index.ts &

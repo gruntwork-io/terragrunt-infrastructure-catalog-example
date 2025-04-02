@@ -1,7 +1,7 @@
-# Lambda Service Module
+# DynamoDB Table Module
 
-This is an example OpenTofu/Terraform module that deploys a [Lambda function](https://aws.amazon.com/lambda/) with an
-[HTTP (V2) API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api.html) in front of it.
+This is an example OpenTofu/Terraform module that deploys a [DynamoDB Table](https://aws.amazon.com/dynamodb/).
+
 See the [root README](/README.md) for instructions on how to provision this module.
 
 Note: This code is meant solely as a simple demonstration of how to lay out your files and folders with

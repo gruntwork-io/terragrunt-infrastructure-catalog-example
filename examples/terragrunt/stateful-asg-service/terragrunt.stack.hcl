@@ -47,7 +47,7 @@ unit "db" {
 }
 
 unit "asg-to-db-sg-rule" {
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/asg-to-db-sg-rule?ref=main"
+  source = "../../../units/asg-to-db-sg-rule"
 
   path = "rules/asg-to-db-sg-rule"
 

@@ -1,12 +1,12 @@
 stack "non_prod" {
-  source = "../../../stacks/stateful-asg-service"
+  source = "../../../stacks/ec2-asg-stateful-service"
 
   path = "non-prod"
 
   values = {
     version = "main"
 
-    name          = "stateful-asg-service-non-prod"
+    name          = "ec2-asg-stateful-service-non-prod"
     instance_type = "t4g.small"
     min_size      = 2
     max_size      = 3
@@ -25,14 +25,14 @@ stack "non_prod" {
 }
 
 stack "prod" {
-  source = "../../../stacks/stateful-asg-service"
+  source = "../../../stacks/ec2-asg-stateful-service"
 
   path = "prod"
 
   values = {
     version = "main"
 
-    name          = "stateful-asg-service-prod"
+    name          = "ec2-asg-stateful-service-prod"
     instance_type = "t4g.medium"
     min_size      = 3
     max_size      = 5
@@ -46,6 +46,6 @@ stack "prod" {
     instance_class    = "db.t4g.medium"
     allocated_storage = 100
     storage_type      = "gp2"
-    skip_final_snapshot = false
+    skip_final_snapshot = true
   }
 }

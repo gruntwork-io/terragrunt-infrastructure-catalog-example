@@ -1,4 +1,4 @@
-package terragrunt_test
+package terragrunt_stacks_test
 
 import (
 	"testing"
@@ -14,7 +14,7 @@ func TestStackStatefulASGService(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../examples/terragrunt/stateful-asg-service",
+		TerraformDir:    "../../../examples/terragrunt/stacks/stateful-asg-service",
 		TerraformBinary: "terragrunt",
 	}
 

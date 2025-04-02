@@ -1,4 +1,4 @@
-package terragrunt_test
+package terragrunt_stacks_test
 
 import (
 	"testing"
@@ -14,7 +14,7 @@ func TestStackMultiEnvStatefulASGService(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../examples/terragrunt/multi-env-stateful-asg-services",
+		TerraformDir:    "../../../examples/terragrunt/stacks/multi-env-stateful-asg-services",
 		TerraformBinary: "terragrunt",
 	}
 

@@ -12,7 +12,7 @@ unit "service" {
   //
   // Assume that a user consuming this stack will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/stateful-asg-service?ref=${values.version}"
+  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/ec2-asg-stateful-service?ref=${values.version}"
 
   path = "service"
 

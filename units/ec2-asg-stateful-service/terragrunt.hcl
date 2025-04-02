@@ -32,7 +32,7 @@ inputs = {
   alb_port      = values.alb_port
 
   user_data = base64encode(templatefile("${get_terragrunt_dir()}/user-data.sh", {
-    db_host     = dependency.db.outputs.endpoint
+    db_host     = replace(dependency.db.outputs.endpoint, ":3306", "")
     db_name     = dependency.db.outputs.db_name
     db_username = values.db_username
     db_password = values.db_password

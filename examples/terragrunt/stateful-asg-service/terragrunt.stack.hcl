@@ -9,6 +9,8 @@ unit "service" {
   path = "service"
 
   values = {
+    // This version here is used as the version passed down to the unit
+    // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
     name          = "stateful-asg-service"
@@ -20,6 +22,8 @@ unit "service" {
 
     db_path = "../db"
 
+    // This is used for the userdata script that
+    // bootstraps the EC2 instances.
     db_username = local.db_username
     db_password = local.db_password
   }
@@ -31,6 +35,8 @@ unit "db" {
   path = "db"
 
   values = {
+    // This version here is used as the version passed down to the unit
+    // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
     name              = "statefuldb"
@@ -52,8 +58,12 @@ unit "asg-to-db-sg-rule" {
   path = "rules/asg-to-db-sg-rule"
 
   values = {
+    // This version here is used as the version passed down to the unit
+    // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
+    // These paths are used for relative references
+    // to the service and db units as dependencies.
     service_path = "../../service"
     db_path      = "../../db"
   }

@@ -7,7 +7,7 @@ stack "non_prod" {
     version = "main"
 
     name          = "ec2-asg-stateful-service-non-prod"
-    instance_type = "t4g.small"
+    instance_type = "t4g.micro"
     min_size      = 2
     max_size      = 3
     server_port   = 3000
@@ -33,7 +33,7 @@ stack "prod" {
     version = "main"
 
     name          = "ec2-asg-stateful-service-prod"
-    instance_type = "t4g.medium"
+    instance_type = "t4g.micro"
     min_size      = 3
     max_size      = 5
     server_port   = 3000
@@ -43,7 +43,7 @@ stack "prod" {
     db_password = "password"
 
     name              = "statefuldbprod"
-    instance_class    = "db.t4g.medium"
+    instance_class    = "db.t4g.small"
     allocated_storage = 100
     storage_type      = "gp2"
     skip_final_snapshot = true

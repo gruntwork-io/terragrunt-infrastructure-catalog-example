@@ -1,10 +1,28 @@
 locals {
   db_username = "admin"
   db_password = "password"
+
+  cpu            = 256
+  memory         = 512
+  container_port = 5000
 }
 
-unit "service" {
-  source = "../../../../units/ec2-asg-stateful-service"
+unit "ecr_repository" {
+  source = "../../../../units/ecr-repository"
+
+  path = "ecr-repository"
+
+  values = {
+    // This version here is used as the version passed down to the unit
+    // to use when fetching the OpenTofu/Terraform module.
+    version = "main"
+
+    name = "stateful-ecs-service"
+  }
+}
+
+unit "ecs_service" {
+  source = "../../../../units/ecs-fargate-stateful-service"
 
   path = "service"
 
@@ -13,20 +31,20 @@ unit "service" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name          = "stateful-asg-service"
-    instance_type = "t4g.micro"
-    min_size      = 2
-    max_size      = 4
-    server_port   = 3000
-    alb_port      = 80
+    name = "stateful-ecs-service"
 
-    db_path     = "../db"
-    asg_sg_path = "../sgs/asg"
+    desired_count  = 2
+    cpu            = local.cpu
+    memory         = local.memory
+    container_port = local.container_port
+    alb_port       = 80
 
-    // This is used for the userdata script that
-    // bootstraps the EC2 instances.
     db_username = local.db_username
     db_password = local.db_password
+
+    service_sg_path = "../sgs/service"
+    db_path         = "../db"
+    ecr_path        = "../ecr-repository"
   }
 }
 
@@ -40,7 +58,7 @@ unit "db" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name              = "ec2statefuldb"
+    name              = "ecsstatefuldb"
     instance_class    = "db.t4g.micro"
     allocated_storage = 20
     storage_type      = "gp2"
@@ -53,27 +71,24 @@ unit "db" {
   }
 }
 
-// We create the security group outside of the ASG unit because
-// we want to handle the wiring of the ASG to the security group
-// to the DB before we start provisioning the service unit.
-unit "asg_sg" {
+unit "service_sg" {
   source = "../../../../units/sg"
 
-  path = "sgs/asg"
+  path = "sgs/service"
 
   values = {
     // This version here is used as the version passed down to the unit
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name = "stateful-asg-service-asg-sg"
+    name = "stateful-ecs-service-service-sg"
   }
 }
 
-unit "sg_to_db_sg_rule" {
+unit "service_to_db_sg_rule" {
   source = "../../../../units/sg-to-db-sg-rule"
 
-  path = "rules/sg-to-db-sg-rule"
+  path = "rules/service-to-db-sg-rule"
 
   values = {
     // This version here is used as the version passed down to the unit
@@ -82,7 +97,7 @@ unit "sg_to_db_sg_rule" {
 
     // These paths are used for relative references
     // to the service and db units as dependencies.
-    sg_path = "../../sgs/asg"
+    sg_path = "../../sgs/service"
     db_path = "../../db"
   }
 }

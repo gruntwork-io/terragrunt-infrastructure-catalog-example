@@ -12,6 +12,7 @@ if ! command -v curl &> /dev/null; then
 fi
 
 # Wait for the service to start.
+# Expected time to start: 15 seconds.
 # We check the health check endpoint every 1 seconds.
 # We wait for a maximum of 30 seconds.
 

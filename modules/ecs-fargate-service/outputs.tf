@@ -7,9 +7,9 @@ output "alb_dns_name" {
 }
 
 output "service_security_group_id" {
-  value = aws_security_group.service.id
+  value = local.service_sg_id
 }
 
 output "alb_security_group_id" {
-  value = aws_security_group.alb.id
+  value = local.alb_sg_id
 }

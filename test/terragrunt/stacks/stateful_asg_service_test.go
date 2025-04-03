@@ -34,8 +34,8 @@ func TestStackStatefulASGService(t *testing.T) {
 	t.Logf("Service started in %s", duration)
 
 	expectedMoviesRouteResponse := `[{"id":1,"title":"The Matrix","releaseYear":1999},{"id":2,"title":"The Matrix Reloaded","releaseYear":2003},{"id":3,"title":"The Matrix Revolutions","releaseYear":2003}]`
-	http_helper.HttpGetWithRetry(t, url+"/movies", nil, 200, expectedMoviesRouteResponse, 30, 5*time.Second)
+	http_helper.HttpGetWithValidation(t, url+"/movies", nil, 200, expectedMoviesRouteResponse)
 
 	expectedMovieRouteResponse := `{"id":1,"title":"The Matrix","releaseYear":1999}`
-	http_helper.HttpGetWithRetry(t, url+"/movies/1", nil, 200, expectedMovieRouteResponse, 30, 5*time.Second)
+	http_helper.HttpGetWithValidation(t, url+"/movies/1", nil, 200, expectedMovieRouteResponse)
 }

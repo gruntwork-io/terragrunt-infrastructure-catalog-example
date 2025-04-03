@@ -44,6 +44,37 @@ resource "aws_ecs_task_definition" "service" {
   memory                   = var.memory
   container_definitions    = var.container_definitions
   requires_compatibilities = ["FARGATE"]
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  runtime_platform {
+    cpu_architecture = "ARM64"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# CREATE IAM ROLE FOR ECS TASK EXECUTION
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "${var.name}-ecs-task-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -51,7 +82,7 @@ resource "aws_ecs_task_definition" "service" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "service_sg" {
-  count = var.service_sg_id == null ? 0 : 1
+  count = var.service_sg_id == null ? 1 : 0
 
   source = "../sg"
 
@@ -162,7 +193,7 @@ resource "aws_lb_listener_rule" "forward_all" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "alb_sg" {
-  count = var.alb_sg_id == null ? 0 : 1
+  count = var.alb_sg_id == null ? 1 : 0
 
   source = "../sg"
 

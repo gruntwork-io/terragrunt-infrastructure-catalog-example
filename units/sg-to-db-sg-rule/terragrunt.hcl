@@ -14,11 +14,11 @@ terraform {
   source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/sg-rule?ref=${values.version}"
 }
 
-dependency "service" {
-  config_path = values.service_path
+dependency "sg" {
+  config_path = values.sg_path
 
   mock_outputs = {
-    asg_security_group_id = "sg-1234567890"
+    id = "sg-1234567890"
   }
 }
 
@@ -34,5 +34,5 @@ inputs = {
   security_group_id        = dependency.db.outputs.db_security_group_id
   from_port                = 3306
   to_port                  = 3306
-  source_security_group_id = dependency.service.outputs.asg_security_group_id
+  source_security_group_id = dependency.sg.outputs.id
 }

@@ -28,10 +28,15 @@ func TestUnitECSFargateService(t *testing.T) {
 
 	startTime := time.Now()
 
-	// In a local test, the service took 1m0.10123s to start.
-	// Budgeting 2 minutes for the service to start.
-	// Checking every 10 seconds.
-	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 24, 10*time.Second)
+	// NOTE: This wait is actually not needed for any user with curl installed.
+	// The unit itself will wait for the service to start before exiting, so
+	// this is just a fallback for users who don't have curl installed.
+	//
+	// Wait for the service to start.
+	// Expected time to start: 60 seconds.
+	// We check the health check endpoint every 10 seconds.
+	// We wait for a maximum of 120 seconds.
+	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 12, 10*time.Second)
 	duration := time.Since(startTime)
 
 	// Print it out in a human readable format.

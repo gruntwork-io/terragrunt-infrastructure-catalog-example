@@ -28,7 +28,8 @@ unit "service" {
 
     // This path is used for relative references
     // to the db unit as a dependency.
-    db_path = "../db"
+    db_path     = "../db"
+    asg_sg_path = "../sgs/asg"
 
     // This is used for the userdata script that
     // bootstraps the EC2 instances.
@@ -64,6 +65,21 @@ unit "db" {
   }
 }
 
+// We create the security group outside of the ASG unit because
+// we want to handle the wiring of the ASG to the security group
+// to the DB before we start provisioning the service unit.
+unit "asg_sg" {
+  source = "../../../../units/sg"
+
+  path = "sgs/asg"
+
+  values = {
+    version = values.version
+
+    name = "${values.name}-asg-sg"
+  }
+}
+
 unit "asg-to-db-sg-rule" {
   // NOTE: Take note that this source here uses
   // a Git URL instead of a local path.
@@ -82,7 +98,7 @@ unit "asg-to-db-sg-rule" {
 
     // These paths are used for relative references
     // to the service and db units as dependencies.
-    service_path = "../../service"
+    asg_sg_path = "../../sgs/asg"
     db_path      = "../../db"
   }
 }

@@ -2,15 +2,15 @@
 # CREATE THE ASG
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_autoscaling_group" "webserver_example" {
+resource "aws_autoscaling_group" "asg" {
   launch_template {
-    id      = aws_launch_template.webserver_example.id
+    id      = aws_launch_template.launch_template.id
     version = "$Latest"
   }
 
   vpc_zone_identifier = [for subnet in local.available_subnets : subnet.id]
 
-  target_group_arns = [aws_lb_target_group.webserver_example.arn]
+  target_group_arns = [aws_lb_target_group.target_group.arn]
   health_check_type = "ELB"
 
   min_size = var.min_size
@@ -31,7 +31,7 @@ resource "aws_autoscaling_group" "webserver_example" {
 # as a variable.
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_launch_template" "webserver_example" {
+resource "aws_launch_template" "launch_template" {
   name_prefix            = var.name
   image_id               = data.aws_ami.amazon_linux.id
   instance_type          = var.instance_type
@@ -48,7 +48,7 @@ resource "aws_launch_template" "webserver_example" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "asg_sg" {
-  count = var.asg_sg_id == null ? 0 : 1
+  count = var.asg_sg_id == null ? 1 : 0
 
   source = "../sg"
 
@@ -181,7 +181,7 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-resource "aws_lb_target_group" "webserver_example" {
+resource "aws_lb_target_group" "target_group" {
   name     = var.name
   port     = var.server_port
   protocol = "HTTP"
@@ -198,7 +198,7 @@ resource "aws_lb_target_group" "webserver_example" {
   }
 }
 
-resource "aws_lb_listener_rule" "webserver_example" {
+resource "aws_lb_listener_rule" "listener_rule" {
   listener_arn = aws_lb_listener.http.arn
   priority     = 100
 
@@ -210,7 +210,7 @@ resource "aws_lb_listener_rule" "webserver_example" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.webserver_example.arn
+    target_group_arn = aws_lb_target_group.target_group.arn
   }
 }
 
@@ -222,7 +222,7 @@ resource "aws_lb_listener_rule" "webserver_example" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "alb_sg" {
-  count = var.alb_sg_id == null ? 0 : 1
+  count = var.alb_sg_id == null ? 1 : 0
 
   source = "../sg"
 

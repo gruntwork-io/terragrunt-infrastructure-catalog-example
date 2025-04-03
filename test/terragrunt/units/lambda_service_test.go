@@ -28,10 +28,11 @@ func TestUnitLambdaService(t *testing.T) {
 
 	startTime := time.Now()
 
-	// In a local test, the service took 1m0.10123s to start.
-	// Budgeting 2 minutes for the service to start.
-	// Checking every 10 seconds.
-	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 24, 10*time.Second)
+	// Wait for the service to start.
+	// Expected time to start: Instant.
+	// We check the health check endpoint every second.
+	// We wait for a maximum of 3 seconds.
+	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 3, 1*time.Second)
 	duration := time.Since(startTime)
 
 	// Print it out in a human readable format.

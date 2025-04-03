@@ -28,9 +28,14 @@ func TestUnitEC2ASGService(t *testing.T) {
 
 	startTime := time.Now()
 
-	// In a local test, the service took 20s to start.
-	// Budgeting 30 seconds for the service to start.
-	// Checking every 1 second.
+	// NOTE: This wait is actually not needed for any user with curl installed.
+	// The unit itself will wait for the service to start before exiting, so
+	// this is just a fallback for users who don't have curl installed.
+	//
+	// Wait for the service to start.
+	// Expected time to start: 15 seconds.
+	// We check the health check endpoint every second.
+	// We wait for a maximum of 30 seconds.
 	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 30, 1*time.Second)
 	duration := time.Since(startTime)
 

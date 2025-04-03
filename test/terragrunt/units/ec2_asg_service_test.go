@@ -18,9 +18,9 @@ func TestUnitEC2ASGService(t *testing.T) {
 		TerraformBinary: "terragrunt",
 	}
 
-	defer terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "destroy")
+	defer terraform.RunTerraformCommand(t, terraformOptions, "destroy", "-auto-approve")
 
-	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
+	terraform.RunTerraformCommand(t, terraformOptions, "apply", "-auto-approve")
 
 	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "output", "-raw", "url")
 	require.NoError(t, err)

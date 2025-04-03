@@ -4,7 +4,7 @@ locals {
 }
 
 unit "service" {
-  source = "../../../units/ec2-asg-stateful-service"
+  source = "../../../../units/ec2-asg-stateful-service"
 
   path = "service"
 
@@ -30,7 +30,7 @@ unit "service" {
 }
 
 unit "db" {
-  source = "../../../units/mysql"
+  source = "../../../../units/mysql"
 
   path = "db"
 
@@ -53,7 +53,7 @@ unit "db" {
 }
 
 unit "asg-to-db-sg-rule" {
-  source = "../../../units/asg-to-db-sg-rule"
+  source = "../../../../units/asg-to-db-sg-rule"
 
   path = "rules/asg-to-db-sg-rule"
 

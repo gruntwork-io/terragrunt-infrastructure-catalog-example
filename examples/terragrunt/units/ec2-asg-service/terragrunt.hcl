@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../../modules/ec2-asg-service"
+  source = "../../../.././/modules/ec2-asg-service"
 }
 
 locals {

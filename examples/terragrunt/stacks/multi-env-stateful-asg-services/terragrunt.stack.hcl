@@ -1,5 +1,5 @@
 stack "non_prod" {
-  source = "../../../stacks/ec2-asg-stateful-service"
+  source = "../../../../stacks/ec2-asg-stateful-service"
 
   path = "non-prod"
 
@@ -25,7 +25,7 @@ stack "non_prod" {
 }
 
 stack "prod" {
-  source = "../../../stacks/ec2-asg-stateful-service"
+  source = "../../../../stacks/ec2-asg-stateful-service"
 
   path = "prod"
 

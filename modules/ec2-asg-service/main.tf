@@ -8,7 +8,7 @@ resource "aws_autoscaling_group" "webserver_example" {
     version = "$Latest"
   }
 
-  vpc_zone_identifier = data.aws_subnets.default.ids
+  vpc_zone_identifier = [for subnet in local.available_subnets : subnet.id]
 
   target_group_arns = [aws_lb_target_group.webserver_example.arn]
   health_check_type = "ELB"
@@ -132,8 +132,20 @@ resource "aws_iam_instance_profile" "instance_profile" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {
+  # Filter subnets to only those in AZs where the instance type is available
+  available_azs = [
+    for az, offerings in data.aws_ec2_instance_type_offerings.offerings : az
+    if length(offerings.instance_types) > 0
+  ]
+
+  # Filter subnets to only those in available AZs
+  available_subnets = [
+    for subnet in data.aws_subnet.default : subnet
+    if contains(local.available_azs, subnet.availability_zone)
+  ]
+
   # An ALB can only be attached to one subnet per AZ, so filter the list of subnets to a unique one per AZ
-  subnets_per_az  = { for subnet in data.aws_subnet.default : subnet.availability_zone => subnet.id... }
+  subnets_per_az  = { for subnet in local.available_subnets : subnet.availability_zone => subnet.id... }
   subnets_for_alb = [for az, subnets in local.subnets_per_az : subnets[0]]
 }
 

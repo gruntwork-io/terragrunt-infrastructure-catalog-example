@@ -48,3 +48,22 @@ data "aws_ami" "amazon_linux" {
     values = ["al2023-ami-2023*"]
   }
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# LOOK UP THE INSTANCE TYPE OFFERINGS
+# ---------------------------------------------------------------------------------------------------------------------
+
+data "aws_ec2_instance_type_offerings" "offerings" {
+  for_each = toset(data.aws_subnet.default[*].availability_zone)
+
+  filter {
+    name   = "instance-type"
+    values = [var.instance_type]
+  }
+  filter {
+    name   = "location"
+    values = [each.key]
+  }
+
+  location_type = "availability-zone"
+}

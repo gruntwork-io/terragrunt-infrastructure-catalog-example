@@ -1,15 +1,14 @@
-output "api_endpoint" {
-  value = aws_apigatewayv2_api.api.api_endpoint
-}
-
-output "apigatewayv2_api_id" {
-  value = aws_apigatewayv2_api.api.id
-}
-
-output "apigatewayv2_default_stage_id" {
-  value = aws_apigatewayv2_stage.default.id
+output "function_url" {
+  description = "The URL of the Lambda function"
+  value       = aws_lambda_function_url.function_url.function_url
 }
 
 output "function_arn" {
-  value = aws_lambda_function.function.arn
+  description = "The ARN of the Lambda function"
+  value       = aws_lambda_function.function.arn
+}
+
+output "function_name" {
+  description = "The name of the Lambda function"
+  value       = aws_lambda_function.function.function_name
 }

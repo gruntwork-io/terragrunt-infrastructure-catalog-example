@@ -1,16 +1,28 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# REQUIRED VARIABLES
+# ---------------------------------------------------------------------------------------------------------------------
+
 variable "name" {
-  type = string
+  description = "The name of the DynamoDB table"
+  type        = string
 }
 
 variable "hash_key" {
-  type = string
+  description = "The hash key of the DynamoDB table"
+  type        = string
 }
 
 variable "hash_key_type" {
-  type = string
+  description = "The type of the hash key (S for string, N for number)"
+  type        = string
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# OPTIONAL VARIABLES
+# ---------------------------------------------------------------------------------------------------------------------
+
 variable "billing_mode" {
-  type    = string
-  default = "PAY_PER_REQUEST"
+  description = "The billing mode for the DynamoDB table (PAY_PER_REQUEST or PROVISIONED)"
+  type        = string
+  default     = "PAY_PER_REQUEST"
 }

@@ -37,51 +37,22 @@ data "aws_iam_policy_document" "policy" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# CREATE AN HTTP (V2) API GATEWAY TO SEND REQUESTS TO THE LAMBDA FUNCTION
+# CREATE A LAMBDA FUNCTION URL
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_apigatewayv2_api" "api" {
-  name          = var.name
-  protocol_type = "HTTP"
-}
-
-resource "aws_apigatewayv2_stage" "default" {
-  api_id      = aws_apigatewayv2_api.api.id
-  name        = "$default"
-  auto_deploy = true
+resource "aws_lambda_function_url" "function_url" {
+  function_name      = aws_lambda_function.function.function_name
+  authorization_type = var.authorization_type
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# CONFIGURE ROUTING FOR THE FUNCTION
+# ALLOW LAMBDA URL TO INVOKE THE FUNCTION
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_apigatewayv2_integration" "lambda" {
-  api_id             = aws_apigatewayv2_api.api.id
-  integration_type   = "AWS_PROXY"
-  integration_uri    = aws_lambda_function.function.arn
-  integration_method = "POST"
-}
-
-resource "aws_apigatewayv2_route" "lambda_route" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = var.route_key
-  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ALLOW API GATEWAY TO CALL THE LAMBDA FUNCTION
-# ---------------------------------------------------------------------------------------------------------------------
-
-resource "aws_lambda_permission" "allow_invoke" {
-  statement_id  = "AllowAPIGateway${var.name}"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.function.arn
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/${local.route_key_method}${local.route_key_path}"
-}
-
-locals {
-  route_key_parts  = split(" ", var.route_key)
-  route_key_method = local.route_key_parts[0]
-  route_key_path   = local.route_key_parts[1]
+resource "aws_lambda_permission" "allow_url_invoke" {
+  statement_id           = "AllowFunctionURLInvoke"
+  action                 = "lambda:InvokeFunctionUrl"
+  function_name          = aws_lambda_function.function.function_name
+  principal              = "*"
+  function_url_auth_type = var.authorization_type
 }

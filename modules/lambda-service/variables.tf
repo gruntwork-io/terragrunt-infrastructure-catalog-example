@@ -17,11 +17,6 @@ variable "handler" {
   type        = string
 }
 
-variable "route_key" {
-  description = "The HTTP (V2) API Gateway route key that can be used to send requests to this function: e.g., $default or GET /foo."
-  type        = string
-}
-
 variable "zip_file" {
   description = "The path to the zip file containing the Lambda function code"
   type        = string
@@ -41,4 +36,10 @@ variable "timeout" {
   description = "The amount of time, in seconds, your function has to run. Max is 900 seconds (15 min)."
   type        = number
   default     = 3
+}
+
+variable "authorization_type" {
+  description = "The type of authorization used for the Lambda function URL. Valid values are 'NONE' or 'AWS_IAM'"
+  type        = string
+  default     = "NONE"
 }

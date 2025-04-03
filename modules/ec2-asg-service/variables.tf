@@ -36,3 +36,19 @@ variable "user_data" {
   description = "The user data to pass to the instances"
   type        = string
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# OPTIONAL VARIABLES
+# ---------------------------------------------------------------------------------------------------------------------
+
+variable "asg_sg_id" {
+  description = "The ID of the security group for the ASG"
+  type        = string
+  default     = null
+}
+
+variable "alb_sg_id" {
+  description = "The ID of the security group for the ALB"
+  type        = string
+  default     = null
+}

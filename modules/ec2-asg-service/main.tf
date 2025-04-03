@@ -35,7 +35,7 @@ resource "aws_launch_template" "webserver_example" {
   name_prefix            = var.name
   image_id               = data.aws_ami.amazon_linux.id
   instance_type          = var.instance_type
-  vpc_security_group_ids = [aws_security_group.asg.id]
+  vpc_security_group_ids = [local.asg_sg_id]
   user_data              = var.user_data
   iam_instance_profile {
     name = aws_iam_instance_profile.instance_profile.name
@@ -47,8 +47,16 @@ resource "aws_launch_template" "webserver_example" {
 # The instances will only accept requests from the ALB.
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_security_group" "asg" {
+module "asg_sg" {
+  count = var.asg_sg_id == null ? 0 : 1
+
+  source = "../sg"
+
   name = "${var.name}-asg"
+}
+
+locals {
+  asg_sg_id = var.asg_sg_id == null ? module.asg_sg[0].id : var.asg_sg_id
 }
 
 module "asg_allow_http_inbound" {
@@ -56,14 +64,14 @@ module "asg_allow_http_inbound" {
 
   from_port                = var.server_port
   to_port                  = var.server_port
-  security_group_id        = aws_security_group.asg.id
-  source_security_group_id = aws_security_group.alb.id
+  security_group_id        = local.asg_sg_id
+  source_security_group_id = local.alb_sg_id
 }
 
 module "asg_allow_all_outbound" {
   source = "../sg-rule"
 
-  security_group_id = aws_security_group.asg.id
+  security_group_id = local.asg_sg_id
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -149,15 +157,15 @@ locals {
   subnets_for_alb = [for az, subnets in local.subnets_per_az : subnets[0]]
 }
 
-resource "aws_lb" "webserver_example" {
+resource "aws_lb" "lb" {
   name               = var.name
   load_balancer_type = "application"
   subnets            = local.subnets_for_alb
-  security_groups    = [aws_security_group.alb.id]
+  security_groups    = [local.alb_sg_id]
 }
 
 resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.webserver_example.arn
+  load_balancer_arn = aws_lb.lb.arn
   port              = var.alb_port
   protocol          = "HTTP"
 
@@ -213,8 +221,16 @@ resource "aws_lb_listener_rule" "webserver_example" {
 # so it only allows traffic to/from trusted sources.
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_security_group" "alb" {
+module "alb_sg" {
+  count = var.alb_sg_id == null ? 0 : 1
+
+  source = "../sg"
+
   name = "${var.name}-alb"
+}
+
+locals {
+  alb_sg_id = var.alb_sg_id == null ? module.alb_sg[0].id : var.alb_sg_id
 }
 
 module "alb_allow_http_inbound" {
@@ -222,14 +238,14 @@ module "alb_allow_http_inbound" {
 
   from_port         = var.alb_port
   to_port           = var.alb_port
-  security_group_id = aws_security_group.alb.id
+  security_group_id = local.alb_sg_id
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
 module "alb_allow_all_outbound" {
   source = "../sg-rule"
 
-  security_group_id = aws_security_group.alb.id
+  security_group_id = local.alb_sg_id
   type              = "egress"
   from_port         = 0
   to_port           = 0

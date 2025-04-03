@@ -25,7 +25,7 @@ resource "aws_ecs_service" "service" {
 
   network_configuration {
     subnets          = data.aws_subnets.default.ids
-    security_groups  = [aws_security_group.service.id]
+    security_groups  = [local.service_sg_id]
     assign_public_ip = true
   }
 
@@ -50,15 +50,22 @@ resource "aws_ecs_task_definition" "service" {
 # CREATE A SECURITY GROUP FOR THE ECS SERVICE
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_security_group" "service" {
-  name   = "${var.name}-task-access"
-  vpc_id = data.aws_vpc.default.id
+module "service_sg" {
+  count = var.service_sg_id == null ? 0 : 1
+
+  source = "../sg"
+
+  name = "${var.name}-service"
+}
+
+locals {
+  service_sg_id = var.service_sg_id == null ? module.service_sg[0].id : var.service_sg_id
 }
 
 module "allow_outbound_all" {
   source = "../sg-rule"
 
-  security_group_id = aws_security_group.service.id
+  security_group_id = local.service_sg_id
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -69,10 +76,10 @@ module "allow_outbound_all" {
 module "allow_inbound_on_container_port" {
   source = "../sg-rule"
 
-  security_group_id        = aws_security_group.service.id
+  security_group_id        = local.service_sg_id
   from_port                = var.container_port
   to_port                  = var.container_port
-  source_security_group_id = aws_security_group.alb.id
+  source_security_group_id = local.alb_sg_id
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -89,7 +96,7 @@ resource "aws_lb" "ecs" {
   name               = var.name
   load_balancer_type = "application"
   subnets            = local.subnets_for_alb
-  security_groups    = [aws_security_group.alb.id]
+  security_groups    = [local.alb_sg_id]
 }
 
 resource "aws_lb_listener" "http" {
@@ -154,14 +161,22 @@ resource "aws_lb_listener_rule" "forward_all" {
 # so it only allows traffic to/from trusted sources.
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_security_group" "alb" {
+module "alb_sg" {
+  count = var.alb_sg_id == null ? 0 : 1
+
+  source = "../sg"
+
   name = "${var.name}-alb"
+}
+
+locals {
+  alb_sg_id = var.alb_sg_id == null ? module.alb_sg[0].id : var.alb_sg_id
 }
 
 module "alb_allow_http_inbound" {
   source = "../sg-rule"
 
-  security_group_id = aws_security_group.alb.id
+  security_group_id = local.alb_sg_id
   from_port         = var.alb_port
   to_port           = var.alb_port
   cidr_blocks       = ["0.0.0.0/0"]
@@ -170,7 +185,7 @@ module "alb_allow_http_inbound" {
 module "alb_allow_all_outbound" {
   source = "../sg-rule"
 
-  security_group_id = aws_security_group.alb.id
+  security_group_id = local.alb_sg_id
   type              = "egress"
   from_port         = 0
   to_port           = 0

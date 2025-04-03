@@ -40,3 +40,15 @@ variable "alb_port" {
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL VARIABLES
 # ---------------------------------------------------------------------------------------------------------------------
+
+variable "service_sg_id" {
+  description = "The ID of the security group for the service"
+  type        = string
+  default     = null
+}
+
+variable "alb_sg_id" {
+  description = "The ID of the security group for the ALB"
+  type        = string
+  default     = null
+}

@@ -1,4 +1,4 @@
-# SG Rule Module
+# Security Group (SG) Rule Module
 
 This is a convenience module for creating security group rules.
 

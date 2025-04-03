@@ -18,6 +18,8 @@ unit "ecr_repository" {
     version = "main"
 
     name = "stateful-ecs-service"
+
+    force_delete = true
   }
 }
 

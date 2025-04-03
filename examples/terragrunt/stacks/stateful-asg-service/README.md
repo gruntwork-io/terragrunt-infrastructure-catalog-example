@@ -6,15 +6,27 @@ This is an example of how to use the following units in a stack:
 - [ec2-asg-stateful-service](/units/ec2-asg-stateful-service) - Deploys an EC2 Auto Scaling Group running a Bun application
 - [asg-to-db-sg-rule](/units/asg-to-db-sg-rule) - Configures security group rules to allow ASG instances to connect to MySQL
 
-## Quick start
+## Usage
 
-1. Open `terragrunt.stack.hcl` and update values as necessary:
-   - `db_username` and `db_password` for MySQL credentials
-   - `instance_type` for EC2 instances (default: t4g.micro)
-   - `min_size` and `max_size` for ASG scaling limits
-   - `server_port` and `alb_port` for application ports
+To deploy this example:
 
-2. Run `terragrunt stack run apply`
+1. Navigate to the example directory:
+
+   ```bash
+   cd examples/terragrunt/stacks/stateful-asg-service
+   ```
+
+2. Run the following command to deploy the service:
+
+   ```bash
+   terragrunt stack run apply
+   ```
+
+3. After deployment, you can access the service through the ALB's DNS name, which will be shown in the output.
+
+   ```bash
+   terragrunt stack output
+   ```
 
 ## Infrastructure Diagram
 

@@ -10,11 +10,11 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestUnitEC2ASGService(t *testing.T) {
+func TestUnitECSFargateService(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../../examples/terragrunt/units/ec2-asg-service",
+		TerraformDir:    "../../../examples/terragrunt/units/ecs-fargate-service",
 		TerraformBinary: "terragrunt",
 	}
 
@@ -28,10 +28,10 @@ func TestUnitEC2ASGService(t *testing.T) {
 
 	startTime := time.Now()
 
-	// In a local test, the service took 20s to start.
-	// Budgeting 30 seconds for the service to start.
-	// Checking every 1 second.
-	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 30, 1*time.Second)
+	// In a local test, the service took 1m0.10123s to start.
+	// Budgeting 2 minutes for the service to start.
+	// Checking every 10 seconds.
+	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 24, 10*time.Second)
 	duration := time.Since(startTime)
 
 	// Print it out in a human readable format.

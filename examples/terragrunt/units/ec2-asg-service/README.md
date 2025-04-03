@@ -2,6 +2,32 @@
 
 This example demonstrates how to deploy a simple web service using an EC2 Auto Scaling Group (ASG) with an Application Load Balancer (ALB) in AWS. The service runs Nginx on Amazon Linux 2023 and automatically scales based on demand.
 
+## Usage
+
+To deploy this example:
+
+1. Navigate to the example directory:
+
+   ```bash
+   cd examples/terragrunt/units/ec2-asg-service
+   ```
+
+2. Run the following command to deploy the service:
+
+   ```bash
+   terragrunt apply
+   ```
+
+3. After deployment, you can access the service through the ALB's DNS name, which will be shown in the output.
+
+   ```bash
+   terragrunt output
+   ```
+
+## Estimated Time to Deploy
+
+In a local test, the service took about 20 seconds to startup after applying.
+
 ## Architecture
 
 The example deploys:
@@ -32,22 +58,6 @@ The service runs NGINX on Amazon Linux 2023 (ARM64) and serves a simple "Hello, 
 2. Creates a basic HTML page
 3. Configures NGINX to listen on the specified port
 4. Starts the Nginx service
-
-## Usage
-
-To deploy this example:
-
-1. Navigate to the example directory:
-
-   ```bash
-   cd examples/terragrunt/ec2-asg-service
-   ```
-
-2. Run the following command to deploy the service:
-
-   ```bash
-   terragrunt stack run apply
-   ```
 
 ## Infrastructure Diagram
 

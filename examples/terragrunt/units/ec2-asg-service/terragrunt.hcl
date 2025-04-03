@@ -3,7 +3,14 @@ include "root" {
 }
 
 terraform {
+  // This double-slash allows the module to leverage relative
+  // paths to other modules in this repository.
   source = "../../../.././/modules/ec2-asg-service"
+
+  after_hook "wait" {
+    commands = ["apply"]
+    execute  = ["${get_terragrunt_dir()}/scripts/wait.sh"]
+  }
 }
 
 locals {

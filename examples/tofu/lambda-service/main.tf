@@ -22,10 +22,9 @@ data "archive_file" "source_code" {
 module "lambda_service" {
   source = "../../../modules/lambda-service"
 
-  name       = var.name
-  runtime    = "nodejs22.x"
-  source_dir = "${path.module}/src"
-  handler    = "index.handler"
-  route_key  = "GET /"
-  zip_file   = data.archive_file.source_code.output_path
+  name      = var.name
+  runtime   = "nodejs22.x"
+  handler   = "index.handler"
+  route_key = "GET /"
+  zip_file  = data.archive_file.source_code.output_path
 }

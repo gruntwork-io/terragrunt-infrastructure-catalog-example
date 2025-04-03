@@ -12,11 +12,6 @@ variable "runtime" {
   type        = string
 }
 
-variable "source_dir" {
-  description = "The directory where your source code is stored. This will be zipped up as the Lambda deployment package."
-  type        = string
-}
-
 variable "handler" {
   description = "The function entrypoint in your code"
   type        = string

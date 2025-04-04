@@ -44,7 +44,7 @@ unit "s3" {
 
     name = "${local.name}-s3"
 
-    s3_path = "../s3"
+    force_destroy = true
 
     s3_key = local.s3_key
     src_path = "${get_repo_root()}/examples/app/lambda-decoupled-artifact/src"

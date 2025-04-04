@@ -22,11 +22,8 @@ BUCKET_NAME="${1:?Error: BUCKET_NAME is required}"
 S3_KEY="${2:?Error: S3_KEY is required}"
 
 # Get the latest version ID of the object
-# Note: We use --query to extract just the VersionId from the response
-# The output will be just the version ID string, which is what terragrunt expects
-aws s3api list-object-versions \
+aws s3api head-object \
   --bucket "$BUCKET_NAME" \
-  --prefix "$S3_KEY" \
-  --max-items 1 \
-  --query 'Versions[0].VersionId' \
-  --output text
+  --key "$S3_KEY" \
+  --query 'VersionId' \
+  | tr -d '"'

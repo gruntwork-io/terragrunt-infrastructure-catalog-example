@@ -17,14 +17,33 @@ variable "handler" {
   type        = string
 }
 
-variable "zip_file" {
-  description = "The path to the zip file containing the Lambda function code"
-  type        = string
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL VARIABLES
 # ---------------------------------------------------------------------------------------------------------------------
+
+variable "zip_file" {
+  description = "The path to the zip file containing the Lambda function code"
+  type        = string
+  default     = null
+}
+
+variable "s3_bucket" {
+  description = "The name of the S3 bucket to use for the Lambda function code"
+  type        = string
+  default     = null
+}
+
+variable "s3_key" {
+  description = "The key of the object in the S3 bucket to use for the Lambda function code"
+  type        = string
+  default     = null
+}
+
+variable "s3_object_version" {
+  description = "The version of the object in the S3 bucket to use for the Lambda function code"
+  type        = string
+  default     = null
+}
 
 variable "memory" {
   description = "The amount of memory, in MB, to assign to the function. This also determines the CPU available. See: https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-memory-console."

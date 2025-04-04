@@ -32,6 +32,10 @@ dependency "service_sg" {
   }
 }
 
+dependencies {
+  paths = [values.service_sg_rule_path]
+}
+
 dependency "db" {
   config_path = values.db_path
 

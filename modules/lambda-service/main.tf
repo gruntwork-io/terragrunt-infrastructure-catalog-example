@@ -2,15 +2,24 @@
 # CREATE THE LAMBDA FUNCTION
 # ---------------------------------------------------------------------------------------------------------------------
 
-
+locals {
+  zip_file_hash = var.zip_file == null ? null : filebase64sha256(var.zip_file)
+}
 
 resource "aws_lambda_function" "function" {
   function_name = var.name
   role          = local.iam_role_arn
 
-  package_type     = "Zip"
+  package_type = "Zip"
+
+  // Assuming the user is supplying a zip file, we can use that.
   filename         = var.zip_file
-  source_code_hash = filesha256(var.zip_file)
+  source_code_hash = local.zip_file_hash
+
+  // Otherwise, we're assuming the user is supplying an S3 bucket, key, and optional version.
+  s3_bucket         = var.s3_bucket
+  s3_key            = var.s3_key
+  s3_object_version = var.s3_object_version
 
   runtime = var.runtime
   handler = var.handler

@@ -22,3 +22,9 @@ variable "force_destroy" {
   type        = bool
   default     = false
 }
+
+variable "enable_versioning" {
+  description = "If set to true, enable versioning on the bucket to protect against accidental or malicious deletion/modification of objects."
+  type        = bool
+  default     = true
+}

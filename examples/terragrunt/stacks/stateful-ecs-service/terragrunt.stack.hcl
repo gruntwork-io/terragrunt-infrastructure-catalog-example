@@ -25,7 +25,7 @@ unit "ecr_repository" {
   }
 }
 
-unit "ecs_service" {
+unit "service" {
   source = "../../../../units/ecs-fargate-stateful-service"
 
   path = "service"
@@ -46,9 +46,10 @@ unit "ecs_service" {
     db_username = local.db_username
     db_password = local.db_password
 
-    service_sg_path = "../sgs/service"
-    db_path         = "../db"
-    ecr_path        = "../ecr-repository"
+    service_sg_path      = "../sgs/service"
+    service_sg_rule_path = "../rules/service-to-db-sg-rule"
+    db_path              = "../db"
+    ecr_path             = "../ecr-repository"
   }
 }
 

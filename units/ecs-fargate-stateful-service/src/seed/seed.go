@@ -22,10 +22,11 @@ func RunSeed(db *sql.DB) error {
 
 	// Insert initial movies
 	insertSQL := `
-	INSERT INTO movies (title, release_year) VALUES
-	('The Matrix', 1999),
-	('The Matrix Reloaded', 2003),
-	('The Matrix Revolutions', 2003);`
+	INSERT INTO movies (id, title, release_year) VALUES
+	(1, 'The Matrix', 1999),
+	(2, 'The Matrix Reloaded', 2003),
+	(3, 'The Matrix Revolutions', 2003)
+	ON DUPLICATE KEY UPDATE id = id;`
 
 	_, err = db.Exec(insertSQL)
 	if err != nil {

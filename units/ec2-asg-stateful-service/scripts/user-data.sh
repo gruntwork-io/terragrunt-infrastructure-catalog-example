@@ -101,18 +101,24 @@ if (movies.length > 0) {
 
 await db.insert(schema.movies).values([
   {
+    id: 1,
     title: "The Matrix",
     releaseYear: 1999,
   },
   {
+    id: 2,
     title: "The Matrix Reloaded",
     releaseYear: 2003,
   },
   {
+    id: 3,
     title: "The Matrix Revolutions",
     releaseYear: 2003,
   },
-]);
+])
+.onConflictDoUpdate({
+  set: { id: sql`id` },
+});
 
 console.log(`Seeding complete.`);
 process.exit();

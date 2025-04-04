@@ -36,3 +36,6 @@ pushd .. >/dev/null
 
 # Package the lambda function.
 zip -r "$PACKAGE_PATH" bootstrap
+
+# Clean up binary
+rm -f bootstrap

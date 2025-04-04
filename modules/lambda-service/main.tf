@@ -31,7 +31,7 @@ resource "aws_lambda_function" "function" {
 
   dynamic "environment" {
     // Hack to allow for optional environment variables.
-    for_each = var.environment_variables == null ? [true] : []
+    for_each = var.environment_variables != null ? [true] : []
     content {
       variables = var.environment_variables
     }

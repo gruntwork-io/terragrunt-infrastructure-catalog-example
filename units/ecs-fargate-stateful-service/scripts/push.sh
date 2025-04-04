@@ -2,6 +2,16 @@
 
 set -euo pipefail
 
+if ! command -v docker &> /dev/null; then
+  echo "Docker CLI could not be found, Docker is required to build and push the container image." >&2
+  exit 1
+fi
+
+if ! command -v aws &> /dev/null; then
+  echo "AWS CLI could not be found, the AWS CLI is required to push the container image to ECR." >&2
+  exit 1
+fi
+
 # If the arguments are not provided, print the usage
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <SRC_PATH> <REPO_URL>" >&2

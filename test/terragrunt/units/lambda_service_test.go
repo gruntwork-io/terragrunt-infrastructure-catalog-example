@@ -18,12 +18,11 @@ func TestUnitLambdaService(t *testing.T) {
 		TerraformBinary: "terragrunt",
 	}
 
-	// FIXME: Restore this.
-	// defer terraform.RunTerraformCommand(t, terraformOptions, "destroy", "-auto-approve")
+	defer terraform.RunTerraformCommand(t, terraformOptions, "destroy", "-auto-approve")
 
 	terraform.RunTerraformCommand(t, terraformOptions, "apply", "-auto-approve")
 
-	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "output", "-raw", "api_endpoint")
+	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "output", "-raw", "function_url")
 	require.NoError(t, err)
 
 	startTime := time.Now()

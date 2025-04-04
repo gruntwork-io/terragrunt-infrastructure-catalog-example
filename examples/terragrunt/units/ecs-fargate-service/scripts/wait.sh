@@ -12,22 +12,22 @@ if ! command -v curl &> /dev/null; then
 fi
 
 # Wait for the service to start.
-# Expected time to start: 60 seconds.
+# Expected time to start: 120 seconds.
 # We check the health check endpoint every 10 seconds.
-# We wait for a maximum of 120 seconds.
+# We wait for a maximum of 240 seconds.
 
 # Get the URL of the service.
 url=$("$TG_CTX_TF_PATH" output -raw url)
 
 # Wait for the service to start.
-for i in {1..12}; do
+for i in {1..24}; do
   if curl -s -o /dev/null -w "%{http_code}" "$url" | grep -q "200"; then
     echo "Service started successfully" >&2
     exit 0
   fi
 
   echo "Waiting for the service to start..." >&2
-  echo "Attempt $i of 12" >&2
+  echo "Attempt $i of 24" >&2
   sleep 10
 done
 

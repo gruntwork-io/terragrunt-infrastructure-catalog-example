@@ -69,7 +69,7 @@ unit "db" {
 // we want to handle the wiring of the ASG to the security group
 // to the DB before we start provisioning the service unit.
 unit "asg_sg" {
-  source = "../../../../units/sg"
+  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/sg?ref=${values.version}"
 
   path = "sgs/asg"
 
@@ -80,7 +80,7 @@ unit "asg_sg" {
   }
 }
 
-unit "asg-to-db-sg-rule" {
+unit "sg_to_db_sg_rule" {
   // NOTE: Take note that this source here uses
   // a Git URL instead of a local path.
   //
@@ -89,16 +89,16 @@ unit "asg-to-db-sg-rule" {
   //
   // Assume that a user consuming this stack will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/asg-to-db-sg-rule?ref=${values.version}"
+  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/sg-to-db-sg-rule?ref=${values.version}"
 
-  path = "rules/asg-to-db-sg-rule"
+  path = "rules/sg-to-db-sg-rule"
 
   values = {
     version = values.version
 
     // These paths are used for relative references
     // to the service and db units as dependencies.
-    asg_sg_path = "../../sgs/asg"
-    db_path      = "../../db"
+    sg_path = "../../sgs/asg"
+    db_path = "../../db"
   }
 }

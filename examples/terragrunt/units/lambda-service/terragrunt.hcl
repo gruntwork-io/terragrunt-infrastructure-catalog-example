@@ -26,6 +26,5 @@ inputs = {
   name       = "lambda-service-unit-example"
   runtime    = "nodejs22.x"
   handler    = "index.handler"
-  route_key  = "GET /"
   zip_file   = local.package_path
 }

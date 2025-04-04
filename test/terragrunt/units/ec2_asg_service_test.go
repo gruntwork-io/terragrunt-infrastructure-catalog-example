@@ -18,8 +18,7 @@ func TestUnitEC2ASGService(t *testing.T) {
 		TerraformBinary: "terragrunt",
 	}
 
-	// FIXME: Restore this.
-	// defer terraform.RunTerraformCommand(t, terraformOptions, "destroy", "-auto-approve")
+	defer terraform.RunTerraformCommand(t, terraformOptions, "destroy", "-auto-approve")
 
 	terraform.RunTerraformCommand(t, terraformOptions, "apply", "-auto-approve")
 

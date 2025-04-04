@@ -18,8 +18,7 @@ func TestStackStatefulASGService(t *testing.T) {
 		TerraformBinary: "terragrunt",
 	}
 
-	// FIXME: Restore this.
-	// defer terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "destroy")
+	defer terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "destroy")
 
 	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
 

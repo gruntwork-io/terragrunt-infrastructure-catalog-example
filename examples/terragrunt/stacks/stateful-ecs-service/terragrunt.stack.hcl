@@ -5,6 +5,8 @@ locals {
   cpu            = 256
   memory         = 512
   container_port = 5000
+
+  name = "stateful-ecs-service-stack"
 }
 
 unit "ecr_repository" {
@@ -17,7 +19,7 @@ unit "ecr_repository" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name = "stateful-ecs-service"
+    name = local.name
 
     force_delete = true
   }
@@ -33,7 +35,7 @@ unit "ecs_service" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name = "stateful-ecs-service"
+    name = local.name
 
     desired_count  = 2
     cpu            = local.cpu
@@ -83,7 +85,7 @@ unit "service_sg" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name = "stateful-ecs-service-service-sg"
+    name = "${local.name}-service-sg"
   }
 }
 

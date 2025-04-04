@@ -11,19 +11,15 @@ terraform {
   //
   // Assume that a user consuming this unit will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/lambda-service?ref=${values.version}"
+  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/dynamodb-table?ref=${values.version}"
 }
 
 inputs = {
   # Required inputs
-  name       = values.name
-  runtime    = values.runtime
-  source_dir = values.source_dir
-  handler    = values.handler
-  route_key  = values.route_key
-  zip_file   = values.zip_file
+  name              = values.name
+  hash_key          = values.hash_key
+  hash_key_type     = values.hash_key_type
 
   # Optional inputs
-  memory  = try(values.memory, null)
-  timeout = try(values.timeout, null)
+  billing_mode      = try(values.billing_mode, "PAY_PER_REQUEST")
 }

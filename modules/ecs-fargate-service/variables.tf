@@ -52,3 +52,9 @@ variable "alb_sg_id" {
   type        = string
   default     = null
 }
+
+variable "cpu_architecture" {
+  description = "The CPU architecture for the service"
+  type        = string
+  default     = "ARM64"
+}

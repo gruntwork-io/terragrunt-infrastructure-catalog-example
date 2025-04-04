@@ -16,13 +16,15 @@ terraform {
 locals {
   container_port = 5000
   memory         = 512
+
+  name = "ecs-fargate-service-unit"
 }
 
 inputs = {
-  name = "ecs-fargate-service"
+  name = local.name
 
   container_definitions = jsonencode([{
-    name      = "ecs-fargate-service"
+    name      = local.name
     image     = "training/webapp"
     essential = true
     memory    = local.memory
@@ -46,4 +48,6 @@ inputs = {
   memory         = local.memory
   container_port = local.container_port
   alb_port       = 80
+
+  cpu_architecture = "X86_64"
 }

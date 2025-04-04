@@ -43,3 +43,21 @@ variable "authorization_type" {
   type        = string
   default     = "NONE"
 }
+
+variable "iam_role_arn" {
+  description = "The ARN of the IAM role to use for the Lambda function"
+  type        = string
+  default     = null
+}
+
+variable "environment_variables" {
+  description = "A map of environment variables to pass to the Lambda function"
+  type        = map(string)
+  default     = null
+}
+
+variable "architectures" {
+  description = "The architectures to support for the Lambda function"
+  type        = list(string)
+  default     = ["arm64"]
+}

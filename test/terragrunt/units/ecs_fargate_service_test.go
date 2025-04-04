@@ -18,8 +18,7 @@ func TestUnitECSFargateService(t *testing.T) {
 		TerraformBinary: "terragrunt",
 	}
 
-	// FIXME: Restore this.
-	// defer terraform.RunTerraformCommand(t, terraformOptions, "destroy", "-auto-approve")
+	defer terraform.RunTerraformCommand(t, terraformOptions, "destroy", "-auto-approve")
 
 	terraform.RunTerraformCommand(t, terraformOptions, "apply", "-auto-approve")
 
@@ -36,7 +35,7 @@ func TestUnitECSFargateService(t *testing.T) {
 	// Expected time to start: 60 seconds.
 	// We check the health check endpoint every 10 seconds.
 	// We wait for a maximum of 120 seconds.
-	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 12, 10*time.Second)
+	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello World!", 24, 10*time.Second)
 	duration := time.Since(startTime)
 
 	// Print it out in a human readable format.

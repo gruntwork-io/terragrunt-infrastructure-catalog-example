@@ -39,15 +39,15 @@ The example deploys two environments (`non-prod` and `prod`), each with:
 
 The example is configured through two stacks in the `terragrunt.stack.hcl` file, each with the following parameters:
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `name` | Name of the service and associated resources | `stateful-asg-service` |
-| `instance_type` | EC2 instance type | `t4g.micro` |
-| `min_size` | Minimum number of instances in the ASG | `2` |
-| `max_size` | Maximum number of instances in the ASG | `4` |
-| `server_port` | Port on which the application listens | `3000` |
-| `alb_port` | Port on which the ALB listens | `80` |
-| `db_port` | Port on which MySQL listens | `3306` |
+| Parameter       | Description                                  | Default                |
+|-----------------|----------------------------------------------|------------------------|
+| `name`          | Name of the service and associated resources | `stateful-asg-service` |
+| `instance_type` | EC2 instance type                            | `t4g.micro`            |
+| `min_size`      | Minimum number of instances in the ASG       | `2`                    |
+| `max_size`      | Maximum number of instances in the ASG       | `4`                    |
+| `server_port`   | Port on which the application listens        | `3000`                 |
+| `alb_port`      | Port on which the ALB listens                | `80`                   |
+| `db_port`       | Port on which MySQL listens                  | `3306`                 |
 
 ## Implementation Details
 

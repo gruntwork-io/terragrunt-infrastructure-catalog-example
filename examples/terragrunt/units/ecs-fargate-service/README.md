@@ -42,14 +42,14 @@ The example deploys:
 
 The example is configured through `terragrunt.hcl` with the following parameters:
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `name` | Name of the service and associated resources | `ecs-fargate-service` |
-| `container_port` | Port on which the container listens | `5000` |
-| `alb_port` | Port on which the ALB listens | `80` |
-| `cpu` | CPU units for the Fargate task | `256` |
-| `memory` | Memory for the Fargate task (MiB) | `512` |
-| `desired_count` | Number of tasks to run | `2` |
+| Parameter        | Description                                  | Default               |
+|------------------|----------------------------------------------|-----------------------|
+| `name`           | Name of the service and associated resources | `ecs-fargate-service` |
+| `container_port` | Port on which the container listens          | `5000`                |
+| `alb_port`       | Port on which the ALB listens                | `80`                  |
+| `cpu`            | CPU units for the Fargate task               | `256`                 |
+| `memory`         | Memory for the Fargate task (MiB)            | `512`                 |
+| `desired_count`  | Number of tasks to run                       | `2`                   |
 
 ## Implementation Details
 

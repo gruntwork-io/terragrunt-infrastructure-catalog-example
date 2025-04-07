@@ -60,6 +60,8 @@ For background information on Terragrunt, read the [Getting Started Guide](https
 
 ## Repository Contents
 
+> **Note**: This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If you are interested in battle-tested, production-ready Terragrunt and OpenTofu/Terraform code, continuously updated and maintained by a team of subject matter experts, consider purchasing a subscription to the [Gruntwork IaC Library](https://www.gruntwork.io/platform/iac-library).
+
 This repository contains the following components to help you get started on building out your own infrastructure catalog:
 
 ### OpenTofu Modules
@@ -92,8 +94,6 @@ This repository contains the following components to help you get started on bui
 ### Terragrunt Stacks
 
 - [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service): An example Terragrunt stack that provisions an EC2 ASG service with an Application Load Balancer (ALB) in front of it, and a MySQL database for state storage. This stack is intended to be provisioned multiple times across multiple environments.
-
-> **Note**: This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If you are interested in battle-tested, production-ready Terragrunt and OpenTofu/Terraform code, continuously updated and maintained by a team of subject matter experts, consider purchasing a subscription to the [Gruntwork IaC Library](https://www.gruntwork.io/platform/iac-library).
 
 ## Consuming the infrastructure-catalog
 

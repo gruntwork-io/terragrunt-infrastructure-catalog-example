@@ -11,9 +11,6 @@ import (
 )
 
 func TestStackMultiEnvStatefulASGService(t *testing.T) {
-	// FIXME: Remove this:
-	t.Skip("Skipping this test until we improve nested stacks output handling")
-
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
@@ -21,8 +18,7 @@ func TestStackMultiEnvStatefulASGService(t *testing.T) {
 		TerraformBinary: "terragrunt",
 	}
 
-	// FIXME: Restore this.
-	// defer terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "destroy")
+	defer terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "destroy")
 
 	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
 

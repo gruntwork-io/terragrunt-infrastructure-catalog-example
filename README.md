@@ -288,7 +288,7 @@ This repo is an example of a *monorepo*, where you have multiple modules, units 
 ### Disadvantages of a Monorepo
 
 - **Harder to keep changes isolated.** While you're modifying module `foo`, you also have to think through whether this will affect module `bar`.
-- **Ever increasing testing time.** The simple approach is to run all tests after every commit, but as the monorepo grows, this gets slower and slower (and more brittle).
+- **Ever-increasing testing time.** The simple approach is to run all tests after every commit, but as the monorepo grows, this gets slower and slower (and more brittle).
 - **No dependency management system.** To only run a subset of the tests or otherwise validate only changed components, you need a way to tell which components were affected by which commits.
 - **No feature toggle support.** OpenTofu/Terraform don't support feature toggles, which are often critical for making large scale changes in a monorepo ([Terragrunt does](https://terragrunt.gruntwork.io/docs/features/runtime-control/#feature-flags), however).
 - **Release versions change even if component code didn't change.** A new "release" of a monorepo involves tagging the repo with a new version. Even if only one component changed, all the components effectively get a new version. This can be especially problematic when introducing a breaking change, as it will require that consumption of any component be done more carefully, even if the component didn't change at all.
@@ -303,7 +303,7 @@ This repo is an example of a *monorepo*, where you have multiple modules, units 
 
 - **Harder to make global changes.** Changes across repositories require lots of checkouts, separate commits and pull requests, and an updated release per module.
 - **Harder to search across the codebase.** Searches require checking out all the repositories or having tooling (e.g., GitHub or Azure DevOps) that allows searching across repositories remotely.
-- **No continuous integration across components.** You might make a change in your component and the teams that depend on that component might not upgrade to the new version for a long time.
+- **No continuous integration across components.** You might make a change in your component, and the teams that depend on that component might not upgrade to the new version for a long time.
 - **Many repositories and builds to manage.** Permissions, pull requests, build pipelines, test failures, etc. get managed in several places.
 - **Potential dependency graph problems.** It is possible to run into issues like "diamond dependencies" when using many components together (See [Dependency Hell](https://en.wikipedia.org/wiki/Dependency_hell)).
 - **Slower initialization.** OpenTofu/Terraform downloads each dependency from scratch, so if one repo depends on components from many other repos, it will download that component every time it's used rather than just once.

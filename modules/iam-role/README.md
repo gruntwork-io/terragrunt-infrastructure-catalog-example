@@ -1,6 +1,6 @@
 # IAM Role Module
 
-This is an example OpenTofu/Terraform module that deploys a [IAM role](https://aws.amazon.com/iam).
+This is an example OpenTofu/Terraform module that deploys an [IAM role](https://aws.amazon.com/iam).
 See the [root README](/README.md) for instructions on how to provision this module.
 
 Note: This code is meant solely as a simple demonstration of how to lay out your files and folders with

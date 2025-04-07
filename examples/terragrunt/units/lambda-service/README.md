@@ -41,13 +41,13 @@ The example deploys:
 
 The example is configured through `terragrunt.hcl` with the following parameters:
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `name` | Name of the service and associated resources | `lambda-service-unit-example` |
-| `runtime` | Lambda function runtime | `nodejs22.x` |
-| `handler` | Lambda function handler | `index.handler` |
-| `authorization_type` | Lambda Function URL authorization type | `NONE` |
-| `zip_file` | Path to the Lambda function package | `package.zip` |
+| Parameter            | Description                                  | Default                       |
+|----------------------|----------------------------------------------|-------------------------------|
+| `name`               | Name of the service and associated resources | `lambda-service-unit-example` |
+| `runtime`            | Lambda function runtime                      | `nodejs22.x`                  |
+| `handler`            | Lambda function handler                      | `index.handler`               |
+| `authorization_type` | Lambda Function URL authorization type       | `NONE`                        |
+| `zip_file`           | Path to the Lambda function package          | `package.zip`                 |
 
 ## Implementation Details
 

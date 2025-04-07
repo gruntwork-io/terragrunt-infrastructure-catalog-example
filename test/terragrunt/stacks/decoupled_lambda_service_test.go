@@ -51,11 +51,12 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	bodyBytes, err := io.ReadAll(response.Body)
 	require.NoError(t, err)
 
-	json.Unmarshal(bodyBytes, &body)
+	err = json.Unmarshal(bodyBytes, &body)
+	require.NoError(t, err)
 
 	initialVersion := body.Version
 
-	// The value is gonna be some random value,
+	// The value is going to be some random value,
 	// so we just need to assert that it's not empty.
 	assert.NotEmpty(t, initialVersion)
 
@@ -72,7 +73,8 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	bodyBytes, err = io.ReadAll(response.Body)
 	require.NoError(t, err)
 
-	json.Unmarshal(bodyBytes, &body)
+	err = json.Unmarshal(bodyBytes, &body)
+	require.NoError(t, err)
 
 	assert.Equal(t, initialVersion, body.Version)
 
@@ -187,7 +189,8 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	bodyBytes, err = io.ReadAll(response.Body)
 	require.NoError(t, err)
 
-	json.Unmarshal(bodyBytes, &body)
+	err = json.Unmarshal(bodyBytes, &body)
+	require.NoError(t, err)
 
 	assert.NotEqual(t, initialVersion, body.Version)
 
@@ -203,7 +206,8 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	bodyBytes, err = io.ReadAll(response.Body)
 	require.NoError(t, err)
 
-	json.Unmarshal(bodyBytes, &body)
+	err = json.Unmarshal(bodyBytes, &body)
+	require.NoError(t, err)
 
 	assert.Equal(t, updatedVersion, body.Version)
 }

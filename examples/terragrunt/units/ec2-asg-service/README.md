@@ -41,14 +41,14 @@ The example deploys:
 
 The example is configured through a single unit in `terragrunt.stack.hcl` with the following parameters:
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `name` | Name of the service and associated resources | `ec2-asg-service` |
-| `instance_type` | EC2 instance type | `t4g.micro` |
-| `min_size` | Minimum number of instances in the ASG | `2` |
-| `max_size` | Maximum number of instances in the ASG | `4` |
-| `server_port` | Port on which Nginx listens | `8080` |
-| `alb_port` | Port on which the ALB listens | `80` |
+| Parameter       | Description                                  | Default           |
+|-----------------|----------------------------------------------|-------------------|
+| `name`          | Name of the service and associated resources | `ec2-asg-service` |
+| `instance_type` | EC2 instance type                            | `t4g.micro`       |
+| `min_size`      | Minimum number of instances in the ASG       | `2`               |
+| `max_size`      | Maximum number of instances in the ASG       | `4`               |
+| `server_port`   | Port on which Nginx listens                  | `8080`            |
+| `alb_port`      | Port on which the ALB listens                | `80`              |
 
 ## Implementation Details
 

@@ -91,6 +91,7 @@ bun run migrate.ts
 cat <<'EOF' > seed.ts
 import { db } from "./db";
 import * as schema from "./schema";
+import { sql } from "drizzle-orm";
 
 const movies = await db.query.movies.findMany();
 
@@ -116,7 +117,7 @@ await db.insert(schema.movies).values([
     releaseYear: 2003,
   },
 ])
-.onConflictDoUpdate({
+.onDuplicateKeyUpdate({
   set: { id: sql`id` },
 });
 

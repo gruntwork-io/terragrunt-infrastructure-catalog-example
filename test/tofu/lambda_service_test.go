@@ -26,6 +26,6 @@ func TestModuleLambdaService(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	url := terraform.Output(t, terraformOptions, "api_endpoint")
+	url := terraform.Output(t, terraformOptions, "function_url")
 	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 30, 5*time.Second)
 }

@@ -1,4 +1,8 @@
 locals {
+  name = "stateful-asg-service"
+
+  # NOTE: This is only defined here to make this example simple.
+  # Don't actually store credentials for your DB in plain text!
   db_username = "admin"
   db_password = "password"
 }
@@ -13,7 +17,7 @@ unit "service" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name          = "stateful-asg-service"
+    name          = local.name
     instance_type = "t4g.micro"
     min_size      = 2
     max_size      = 4
@@ -40,7 +44,7 @@ unit "db" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name              = "ec2statefuldb"
+    name              = "${replace(local.name, "-", "")}db"
     instance_class    = "db.t4g.micro"
     allocated_storage = 20
     storage_type      = "gp2"
@@ -66,7 +70,7 @@ unit "asg_sg" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name = "stateful-asg-service-asg-sg"
+    name = "${local.name}-asg-sg"
   }
 }
 

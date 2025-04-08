@@ -21,7 +21,7 @@ module "service" {
   source = "../../../modules/ec2-asg-service"
 
   name          = var.name
-  instance_type = "t3.micro"
+  instance_type = "t4g.micro"
   min_size      = 2
   max_size      = 4
   server_port   = local.server_port

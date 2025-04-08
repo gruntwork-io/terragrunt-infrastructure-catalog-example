@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"os/exec"
 	"path/filepath"
@@ -30,11 +29,14 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 		TerraformBinary: "terragrunt",
 	}
 
-	defer terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "destroy")
+	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
+	defer terraform.RunTerraformCommand(t, terraformOptions, "--experiment", "stacks", "stack", "run", "destroy")
 
-	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
+	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
+	terraform.RunTerraformCommand(t, terraformOptions, "--experiment", "stacks", "stack", "run", "apply")
 
-	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "lambda_service.function_url")
+	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
+	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "--experiment", "stacks", "stack", "output", "-raw", "lambda_service.function_url")
 	require.NoError(t, err)
 
 	response, err := http.Get(url)
@@ -65,7 +67,8 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	assert.NotEqual(t, "unknown", initialVersion)
 
 	// Now, we'll re-run the apply, and assert that the version hasn't changed.
-	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
+	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
+	terraform.RunTerraformCommand(t, terraformOptions, "--experiment", "stacks", "stack", "run", "apply")
 
 	response, err = http.Get(url)
 	require.NoError(t, err)
@@ -85,7 +88,8 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	require.NoError(t, err)
 
 	// Grab the bucket name from stack output
-	bucketName, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "s3.name")
+	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
+	bucketName, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "--experiment", "stacks", "stack", "output", "-raw", "s3.name")
 	require.NoError(t, err)
 
 	// We're just going to hardcode the s3 key as handler.zip for now.
@@ -117,15 +121,14 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	// Load default AWS configuration (reads region and credentials
 	// from environment variables, shared config files, etc.)
 	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
-	}
+	require.NoError(t, err)
 
 	// Create an AWS Lambda service client
 	lambdaClient := lambda.NewFromConfig(cfg)
 
 	// Grab the function name from stack output
-	functionName, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "lambda_service.function_name")
+	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
+	functionName, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "--experiment", "stacks", "stack", "output", "-raw", "lambda_service.function_name")
 	require.NoError(t, err)
 
 	// Use the S3 client to get the latest version ID of the object
@@ -198,7 +201,8 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 
 	// Now, we'll run the apply again, and assert that the version
 	// won't change.
-	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
+	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
+	terraform.RunTerraformCommand(t, terraformOptions, "--experiment", "stacks", "stack", "run", "apply")
 
 	response, err = http.Get(url)
 	require.NoError(t, err)

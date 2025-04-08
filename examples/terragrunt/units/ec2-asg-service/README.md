@@ -89,5 +89,5 @@ Components:
 When you're done testing, you can destroy the infrastructure:
 
 ```bash
-terragrunt stack run destroy
+terragrunt run destroy
 ```

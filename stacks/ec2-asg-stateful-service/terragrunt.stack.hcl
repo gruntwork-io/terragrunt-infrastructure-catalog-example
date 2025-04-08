@@ -1,4 +1,8 @@
 locals {
+  name = values.name
+
+  # NOTE: This is only defined here to make this example simple.
+  # Don't actually store credentials for your DB in plain text!
   db_username = values.db_username
   db_password = values.db_password
 }
@@ -19,7 +23,7 @@ unit "service" {
   values = {
     version = values.version
 
-    name          = values.name
+    name          = local.name
     instance_type = values.instance_type
     min_size      = values.min_size
     max_size      = values.max_size
@@ -54,7 +58,7 @@ unit "db" {
   values = {
     version = values.version
 
-    name              = values.name
+    name              = "${replace(local.name, "-", "")}db"
     instance_class    = values.instance_class
     allocated_storage = values.allocated_storage
     storage_type      = values.storage_type
@@ -76,7 +80,7 @@ unit "asg_sg" {
   values = {
     version = values.version
 
-    name = "${values.name}-asg-sg"
+    name = "${local.name}-asg-sg"
   }
 }
 

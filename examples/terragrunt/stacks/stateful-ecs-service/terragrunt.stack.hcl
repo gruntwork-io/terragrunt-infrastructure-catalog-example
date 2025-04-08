@@ -63,7 +63,7 @@ unit "db" {
     // to use when fetching the OpenTofu/Terraform module.
     version = "main"
 
-    name              = "ecsstatefuldb"
+    name              = "${replace(local.name, "-", "")}db"
     instance_class    = "db.t4g.micro"
     allocated_storage = 20
     storage_type      = "gp2"

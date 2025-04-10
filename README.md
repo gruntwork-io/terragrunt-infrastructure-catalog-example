@@ -2,13 +2,27 @@
 
 # Example infrastructure-catalog for Terragrunt
 
+> [!IMPORTANT]
+> This repository uses experimental features of Terragrunt that are soon to be made generally available. If you are reading this prior to the general availability of the [Stacks](https://terragrunt.gruntwork.io/docs/reference/experiments/#stacks) and [CLI Redesign](https://terragrunt.gruntwork.io/docs/reference/experiments/#cli-redesign) experiments, you will have to opt into usage of these features.
+>
+> The simplest way to opt into these features is to set the `TG_EXPERIMENT_MODE` environment variable to `true`.
+>
+> ```bash
+> export TG_EXPERIMENT_MODE=true
+> ```
+>
+> For more information on how to work with experimental features, see the [Experiments documentation](https://terragrunt.gruntwork.io/docs/reference/experiments).
+
 This repository, along with the [terragrunt-infrastructure-live-stacks-example repository](https://github.com/gruntwork-io/terragrunt-infrastructure-live-stacks-example), offers a set of best practice infrastructure configurations for setting up a catalog for your infrastructure.
 
 An `infrastructure-catalog` is a repository that contains the best practice infrastructure patterns you or your organization wants to use across your [infrastructure estate](https://terragrunt.gruntwork.io/docs/getting-started/terminology/#infrastructure-estate). This is a Git repository that is vetted, and tested to reliably provision the infrastructure patterns you need. You typically version this repository using [Semantic Versioning](https://semver.org/) to communicate how changes to infrastructure patterns will impact consumption in your infrastructure estate.
 
 If you have not already done so, you are encouraged to read the [Terragrunt Getting Started Guide](https://terragrunt.gruntwork.io/docs/getting-started/quick-start/) to get familiar with the terminology and concepts used in this repository before proceeding.
 
-## Usage
+## Getting Started
+
+> [!TIP]
+> If you have an existing repository that was started using the [terragrunt-infrastructure-modules-example](https://github.com/gruntwork-io/terragrunt-infrastructure-modules-example) repository as a starting point, follow the [migration guide](/docs/migration-guide.md) for help in adjusting your existing configurations to take advantage of the patterns outlined in this repository.
 
 To use this repository, you'll want to fork this repository into your own Git organization.
 
@@ -16,7 +30,8 @@ The steps for doing this are the following:
 
 1. Create a new Git repository in your organization (e.g. [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository), [GitLab](https://docs.gitlab.com/user/project/repository/)).
 
-   **Note**: You typically shouldn't have any sensitive information in this repository, as it will only contain generic infrastructure patterns that can be provisioned in any environment, but you might want to have this repository be private regardless.
+   > [!TIP]
+   > You typically shouldn't have any sensitive information in this repository, as it will only contain generic infrastructure patterns that can be provisioned in any environment, but you might want to have this repository be private regardless.
 
 2. Create a bare clone of this repository somewhere on your local machine.
 
@@ -60,7 +75,8 @@ For background information on Terragrunt, read the [Getting Started Guide](https
 
 ## Repository Contents
 
-> **Note**: This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If you are interested in battle-tested, production-ready Terragrunt and OpenTofu/Terraform code, continuously updated and maintained by a team of subject matter experts, consider purchasing a subscription to the [Gruntwork IaC Library](https://www.gruntwork.io/platform/iac-library).
+> [!NOTE]
+> This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If you are interested in battle-tested, production-ready Terragrunt and OpenTofu/Terraform code, continuously updated and maintained by a team of subject matter experts, consider purchasing a subscription to the [Gruntwork IaC Library](https://www.gruntwork.io/platform/iac-library).
 
 This repository contains the following components to help you get started on building out your own infrastructure catalog:
 
@@ -95,6 +111,10 @@ This repository contains the following components to help you get started on bui
 
 - [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service): An example Terragrunt stack that provisions an EC2 ASG service with an Application Load Balancer (ALB) in front of it, and a MySQL database for state storage. This stack is intended to be provisioned multiple times across multiple environments.
 
+### Examples
+
+To see example usage for all of these components, see the [examples](/examples) directory.
+
 ## Consuming the infrastructure-catalog
 
 There are three ways to consume the components in this repository:
@@ -119,7 +139,8 @@ catalog {
 
 Where `github.com/acme/terragrunt-infrastructure-catalog` is the URL for the fork of this repository.
 
-**Note**: The `git::git@github.com:` syntax is used to explicitly tell Terragrunt to use SSH when cloning the repository. This is likely what you'll need to do if you're using a private fork of this repository.
+> [!TIP]
+> The `git::git@github.com:` syntax is used to explicitly tell Terragrunt to use SSH when cloning the repository. This is likely what you'll need to do if you're using a private fork of this repository.
 
 Once you've configured the catalog, you can create a new directory, navigate into it, and run `terragrunt catalog` to see the components available for scaffolding:
 
@@ -157,7 +178,8 @@ For example, instead of running `terragrunt catalog` and then selecting the `lam
 terragrunt scaffold git::git@github.com:acme/terragrunt-infrastructure-catalog//modules/lambda-service
 ```
 
-**Note**: Take note of the double-slash (`//`) in the URL above. This is used to specify the relative path within the repository for the component you want to scaffold.
+> [!TIP]
+> Take note of the double-slash (`//`) in the URL above. This is used to specify the relative path within the repository for the component you want to scaffold.
 
 ### Manually author IaC
 
@@ -235,7 +257,8 @@ e.g.
 TG_BUCKET_PREFIX='acme-' go test -timeout 60m -count=1 -run Test<Something>
 ```
 
-**Note**: The `TG_BUCKET_PREFIX` environment variable is used to set the prefix for the OpenTofu/Terraform state bucket as managed by Terragrunt's [Remote State Backend feature](https://terragrunt.gruntwork.io/docs/features/state-backend/). This is used to ensure that the Terragrunt state bucket is unique across all S3 buckets in existence. It's recommended to either set this environment variable to a short prefix that represents your organization (e.g. `acme-`), or to update the value in [examples/terragrunt/root.hcl](/examples/terragrunt/root.hcl) to hard-code a value unique to your organization for the `bucket` attribute.
+> [!IMPORTANT]
+> The `TG_BUCKET_PREFIX` environment variable is used to set the prefix for the OpenTofu/Terraform state bucket as managed by Terragrunt's [Remote State Backend feature](https://terragrunt.gruntwork.io/docs/features/state-backend/). This is used to ensure that the Terragrunt state bucket is unique across all S3 buckets in existence. It's recommended to either set this environment variable to a short prefix that represents your organization (e.g. `acme-`), or to update the value in [examples/terragrunt/root.hcl](/examples/terragrunt/root.hcl) to hard-code a value unique to your organization for the `bucket` attribute.
 
 Testing OpenTofu/Terraform modules as Terragrunt units is useful to ensure that the module can be reliably provisioned as a Terragrunt unit in the future. It can also be useful to validate that certain implementation details of how the module is meant to be consumed can be done reliably. For example, you may want to test that application code that a module depends on is packaged correctly by the [hooks](https://terragrunt.gruntwork.io/docs/features/hooks/) used in the unit, or that the right interface has been exposed for consumption by the unit.
 

@@ -16,7 +16,6 @@ stack "non_prod" {
     db_username = "admin"
     db_password = "password"
 
-    name              = "statefuldbnonprod"
     instance_class    = "db.t4g.small"
     allocated_storage = 50
     storage_type      = "gp2"
@@ -42,7 +41,6 @@ stack "prod" {
     db_username = "admin"
     db_password = "password"
 
-    name              = "statefuldbprod"
     instance_class    = "db.t4g.small"
     allocated_storage = 100
     storage_type      = "gp2"

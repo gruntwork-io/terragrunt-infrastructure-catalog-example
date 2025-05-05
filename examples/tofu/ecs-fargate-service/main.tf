@@ -45,6 +45,9 @@ module "ecs_service" {
   memory         = local.memory
   container_port = local.container_port
   alb_port       = 80
+
+  # The image used for this example only supports X86_64.
+  cpu_architecture = "X86_64"
 }
 
 locals {

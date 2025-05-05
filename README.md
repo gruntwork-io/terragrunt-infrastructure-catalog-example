@@ -2,17 +2,6 @@
 
 # Example infrastructure-catalog for Terragrunt
 
-> [!IMPORTANT]
-> This repository uses experimental features of Terragrunt that are soon to be made generally available. If you are reading this prior to the general availability of the [Stacks](https://terragrunt.gruntwork.io/docs/reference/experiments/#stacks) and [CLI Redesign](https://terragrunt.gruntwork.io/docs/reference/experiments/#cli-redesign) experiments, you will have to opt into usage of these features.
->
-> The simplest way to opt into these features is to set the `TG_EXPERIMENT_MODE` environment variable to `true`.
->
-> ```bash
-> export TG_EXPERIMENT_MODE=true
-> ```
->
-> For more information on how to work with experimental features, see the [Experiments documentation](https://terragrunt.gruntwork.io/docs/reference/experiments).
-
 This repository, along with the [terragrunt-infrastructure-live-stacks-example repository](https://github.com/gruntwork-io/terragrunt-infrastructure-live-stacks-example), offers a set of best practice infrastructure configurations for setting up a catalog for your infrastructure.
 
 An `infrastructure-catalog` is a repository that contains the best practice infrastructure patterns you or your organization wants to use across your [infrastructure estate](https://terragrunt.gruntwork.io/docs/getting-started/terminology/#infrastructure-estate). This is a Git repository that is vetted, and tested to reliably provision the infrastructure patterns you need. You typically version this repository using [Semantic Versioning](https://semver.org/) to communicate how changes to infrastructure patterns will impact consumption in your infrastructure estate.

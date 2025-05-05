@@ -18,18 +18,14 @@ func TestStackMultiEnvStatefulASGService(t *testing.T) {
 		TerraformBinary: "terragrunt",
 	}
 
-	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
-	defer terraform.RunTerraformCommand(t, terraformOptions, "--experiment", "stacks", "stack", "run", "destroy")
+	defer terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "destroy")
 
-	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
-	terraform.RunTerraformCommand(t, terraformOptions, "--experiment", "stacks", "stack", "run", "apply")
+	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
 
-	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
-	non_prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "--experiment", "stacks", "stack", "output", "-raw", "non_prod.service.url")
+	non_prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "non_prod.service.url")
 	require.NoError(t, err)
 
-	// TODO: Get rid of `--experiment stacks` once Stacks are GA.
-	prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "--experiment", "stacks", "stack", "output", "-raw", "prod.service.url")
+	prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "prod.service.url")
 	require.NoError(t, err)
 
 	startTime := time.Now()

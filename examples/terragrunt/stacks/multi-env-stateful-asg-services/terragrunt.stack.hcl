@@ -1,5 +1,5 @@
 stack "non_prod" {
-  source = "../../../../stacks/ec2-asg-stateful-service"
+  source = "git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//stacks/ec2-asg-stateful-service"
 
   path = "non-prod"
 

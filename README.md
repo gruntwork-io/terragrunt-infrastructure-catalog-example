@@ -25,13 +25,13 @@ The steps for doing this are the following:
 2. Create a bare clone of this repository somewhere on your local machine.
 
    ```bash
-   git clone --bare https://github.com/gruntwork-io/terragrunt-infrastructure-modules-example.git
+   git clone --bare https://github.com/gruntwork-io/terragrunt-infrastructure-catalog-example.git
    ```
 
 3. Push the bare clone to your new Git repository.
 
    ```bash
-   cd terragrunt-infrastructure-modules-example.git
+   cd terragrunt-infrastructure-catalog-example.git
    git push --mirror <YOUR_GIT_REPO_URL> # e.g. git push --mirror git@github.com:acme/terragrunt-infrastructure-catalog-example.git
    ```
 
@@ -39,7 +39,7 @@ The steps for doing this are the following:
 
    ```bash
    cd ..
-   rm -rf terragrunt-infrastructure-modules-example.git
+   rm -rf terragrunt-infrastructure-catalog-example.git
    ```
 
 5. (Optional) Delete the contents of this usage documentation from your fork of this repository.

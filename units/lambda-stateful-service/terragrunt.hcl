@@ -14,7 +14,7 @@ terraform {
   source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/lambda-service?ref=${values.version}"
 
   before_hook "package" {
-    commands = ["apply", "plan"]
+    commands = ["apply", "plan", "destroy"]
     execute  = [local.package_script, local.src_dir, local.zip_file]
   }
 }
@@ -36,10 +36,10 @@ dependency "dynamodb_table" {
 }
 
 locals {
-  script_dir = "${get_terragrunt_dir()}/scripts"
+  script_dir     = "${get_terragrunt_dir()}/scripts"
   package_script = "${local.script_dir}/package.sh"
 
-  src_dir = "${get_terragrunt_dir()}/src"
+  src_dir  = "${get_terragrunt_dir()}/src"
   zip_file = "${get_terragrunt_dir()}/bootstrap.zip"
 }
 

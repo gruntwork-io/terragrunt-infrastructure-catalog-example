@@ -15,7 +15,7 @@ func TestModuleMySQL(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir:    "../../examples/tofu/mysql",
 		TerraformBinary: "tofu",
-		Vars: map[string]interface{}{
+		Vars: map[string]any{
 			"name": fmt.Sprintf("mysqltest%s", random.UniqueId()),
 		},
 		EnvVars: map[string]string{

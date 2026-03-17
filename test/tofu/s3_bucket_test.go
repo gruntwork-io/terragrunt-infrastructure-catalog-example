@@ -16,8 +16,11 @@ func TestModuleS3Bucket(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir:    "../../examples/tofu/s3-bucket",
 		TerraformBinary: "tofu",
-		Vars: map[string]interface{}{
-			"name": fmt.Sprintf("terragrunt-infrastructure-modules-examples-test-%s", strings.ToLower(random.UniqueId())),
+		Vars: map[string]any{
+			"name": fmt.Sprintf(
+				"terragrunt-infrastructure-modules-examples-test-%s",
+				strings.ToLower(random.UniqueId()),
+			),
 		},
 	}
 

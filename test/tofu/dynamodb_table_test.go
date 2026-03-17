@@ -14,7 +14,7 @@ func TestModuleDynamoDBTable(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir:    "../../examples/tofu/dynamodb-table",
 		TerraformBinary: "tofu",
-		Vars: map[string]interface{}{
+		Vars: map[string]any{
 			"name":          fmt.Sprintf("dynamodb-test-%s", random.UniqueId()),
 			"hash_key":      "id",
 			"hash_key_type": "S",

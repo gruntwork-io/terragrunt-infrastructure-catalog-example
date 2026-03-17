@@ -54,8 +54,8 @@ dependency "ecr" {
 }
 
 locals {
-  script_dir = "${get_terragrunt_dir()}/scripts"
-  sha_script = "${local.script_dir}/sha.sh"
+  script_dir  = "${get_terragrunt_dir()}/scripts"
+  sha_script  = "${local.script_dir}/sha.sh"
   push_script = "${local.script_dir}/push.sh"
   wait_script = "${local.script_dir}/wait.sh"
 

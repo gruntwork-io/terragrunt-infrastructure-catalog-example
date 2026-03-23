@@ -11,7 +11,10 @@ terraform {
   //
   // Assume that a user consuming this unit will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//modules/s3-bucket?ref=${values.version}"
+  //
+  // If you need to use SSH to authenticate, you can swap the source URL to a
+  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
+  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//modules/s3-bucket?ref=${values.version}"
 
   // This after hook is here to ensure that a handler exists in S3 before
   // the lambda function is created.

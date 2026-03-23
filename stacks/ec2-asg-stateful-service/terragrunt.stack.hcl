@@ -16,7 +16,10 @@ unit "service" {
   //
   // Assume that a user consuming this stack will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/ec2-asg-stateful-service?ref=${values.version}"
+  //
+  // If you need to use SSH to authenticate, you can swap the source URL to a
+  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
+  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//units/ec2-asg-stateful-service?ref=${values.version}"
 
   path = "service"
 
@@ -51,7 +54,10 @@ unit "db" {
   //
   // Assume that a user consuming this stack will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/mysql?ref=${values.version}"
+  //
+  // If you need to use SSH to authenticate, you can swap the source URL to a
+  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
+  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//units/mysql?ref=${values.version}"
 
   path = "db"
 
@@ -73,7 +79,18 @@ unit "db" {
 // we want to handle the wiring of the ASG to the security group
 // to the DB before we start provisioning the service unit.
 unit "asg_sg" {
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/sg?ref=${values.version}"
+  // NOTE: Take note that this source here uses
+  // a Git URL instead of a local path.
+  //
+  // This is because units and stacks are generated
+  // as shallow directories when consumed.
+  //
+  // Assume that a user consuming this stack will exclusively have access
+  // to the directory this file is in, and nothing else in this repository.
+  //
+  // If you need to use SSH to authenticate, you can swap the source URL to a
+  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
+  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//units/sg?ref=${values.version}"
 
   path = "sgs/asg"
 
@@ -93,7 +110,10 @@ unit "sg_to_db_sg_rule" {
   //
   // Assume that a user consuming this stack will exclusively have access
   // to the directory this file is in, and nothing else in this repository.
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//units/sg-to-db-sg-rule?ref=${values.version}"
+  //
+  // If you need to use SSH to authenticate, you can swap the source URL to a
+  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
+  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//units/sg-to-db-sg-rule?ref=${values.version}"
 
   path = "rules/sg-to-db-sg-rule"
 

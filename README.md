@@ -50,9 +50,13 @@ The steps for doing this are the following:
 
 To use this repository, you'll want to make sure you have the following installed:
 
-- [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/)
+- [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/) (**minimum version 1.1**)
 - [OpenTofu](https://opentofu.org/docs/intro/install/) (or [Terraform](https://developer.hashicorp.com/terraform/install))
 - [Go](https://go.dev/doc/install)
+
+> [!IMPORTANT]
+>
+> Terragrunt **1.1 or newer** is required. The units and stacks here reference in-repo components by relative path using the [`update_source_with_cas`](https://docs.terragrunt.com/features/cas/) attribute, wire stack dependencies with [`autoinclude`](https://docs.terragrunt.com/reference/experiments/#stack-dependencies) blocks, and track application source with the [`mark_glob_as_read`](https://docs.terragrunt.com/reference/hcl/functions/#mark_glob_as_read) function. For a walkthrough of adopting these features in your own catalog, see the [Terragrunt 1.1 migration guide](/docs/1.1-migration-guide.md).
 
 To simplify the process of installing these tools, you can install [mise](https://mise.jdx.dev/), then run the following to concurrently install all the tools you need, pinned to the versions they were tested with (as tracked in the [mise.toml](./mise.toml) file):
 

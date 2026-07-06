@@ -3,18 +3,8 @@ include "root" {
 }
 
 terraform {
-  // NOTE: Take note that this source here uses
-  // a Git URL instead of a local path.
-  //
-  // This is because units and stacks are generated
-  // as shallow directories when consumed.
-  //
-  // Assume that a user consuming this unit will exclusively have access
-  // to the directory this file is in, and nothing else in this repository.
-  //
-  // If you need to use SSH to authenticate, you can swap the source URL to a
-  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
-  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//modules/s3-bucket?ref=${values.version}"
+  source                 = "../..//modules/s3-bucket"
+  update_source_with_cas = true
 
   // This after hook is here to ensure that a handler exists in S3 before
   // the lambda function is created.
@@ -22,7 +12,7 @@ terraform {
   // Once an initial handler is created, this hook will no longer do anything.
   after_hook "handler_init" {
     commands = ["apply"]
-    execute  = [
+    execute = [
       "${get_terragrunt_dir()}/scripts/handler-init.sh",
       values.name,
       values.s3_key,

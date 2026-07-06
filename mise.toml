@@ -1,4 +1,4 @@
 [tools]
-go = "1.26.1"
+go = "1.26.4"
 opentofu = "1.11.5"
-terragrunt = "0.99.4"
+terragrunt = "1.1.0"

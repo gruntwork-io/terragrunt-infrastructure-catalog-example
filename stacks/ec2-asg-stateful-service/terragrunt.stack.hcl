@@ -8,24 +8,15 @@ locals {
 }
 
 unit "service" {
-  // NOTE: Take note that this source here uses
-  // a Git URL instead of a local path.
-  //
-  // This is because units and stacks are generated
-  // as shallow directories when consumed.
-  //
-  // Assume that a user consuming this stack will exclusively have access
-  // to the directory this file is in, and nothing else in this repository.
-  //
-  // If you need to use SSH to authenticate, you can swap the source URL to a
-  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
-  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//units/ec2-asg-stateful-service?ref=${values.version}"
+  // The `//` marks the repository root. That context lets each generated unit
+  // properly use `update_source_with_cas` to find its relative paths within the
+  // catalog and materialize them from the CAS.
+  source                 = "../..//units/ec2-asg-stateful-service"
+  update_source_with_cas = true
 
   path = "service"
 
   values = {
-    version = values.version
-
     name          = local.name
     instance_type = values.instance_type
     min_size      = values.min_size
@@ -33,37 +24,50 @@ unit "service" {
     server_port   = values.server_port
     alb_port      = values.alb_port
 
-    // This path is used for relative references
-    // to the db unit as a dependency.
-    db_path     = "../db"
-    asg_sg_path = "../sgs/asg"
-
     // This is used for the userdata script that
     // bootstraps the EC2 instances.
     db_username = local.db_username
     db_password = local.db_password
   }
+
+  autoinclude {
+    dependency "asg_sg" {
+      config_path = unit.asg_sg.path
+
+      mock_outputs = {
+        id = "mock-asg-sg-id"
+      }
+    }
+
+    dependency "db" {
+      config_path = unit.db.path
+
+      mock_outputs = {
+        endpoint = "mock-endpoint"
+        db_name  = "mock-db-name"
+      }
+    }
+
+    inputs = {
+      asg_sg_id = dependency.asg_sg.outputs.id
+
+      user_data = base64encode(templatefile("scripts/user-data.sh", {
+        db_host     = replace(dependency.db.outputs.endpoint, ":3306", "")
+        db_name     = dependency.db.outputs.db_name
+        db_username = values.db_username
+        db_password = values.db_password
+      }))
+    }
+  }
 }
 
 unit "db" {
-  // NOTE: Take note that this source here uses
-  // a Git URL instead of a local path.
-  //
-  // This is because units and stacks are generated
-  // as shallow directories when consumed.
-  //
-  // Assume that a user consuming this stack will exclusively have access
-  // to the directory this file is in, and nothing else in this repository.
-  //
-  // If you need to use SSH to authenticate, you can swap the source URL to a
-  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
-  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//units/mysql?ref=${values.version}"
+  source                 = "../..//units/mysql"
+  update_source_with_cas = true
 
   path = "db"
 
   values = {
-    version = values.version
-
     name              = "${replace(local.name, "-", "")}db"
     instance_class    = values.instance_class
     allocated_storage = values.allocated_storage
@@ -79,50 +83,44 @@ unit "db" {
 // we want to handle the wiring of the ASG to the security group
 // to the DB before we start provisioning the service unit.
 unit "asg_sg" {
-  // NOTE: Take note that this source here uses
-  // a Git URL instead of a local path.
-  //
-  // This is because units and stacks are generated
-  // as shallow directories when consumed.
-  //
-  // Assume that a user consuming this stack will exclusively have access
-  // to the directory this file is in, and nothing else in this repository.
-  //
-  // If you need to use SSH to authenticate, you can swap the source URL to a
-  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
-  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//units/sg?ref=${values.version}"
+  source                 = "../..//units/sg"
+  update_source_with_cas = true
 
   path = "sgs/asg"
 
   values = {
-    version = values.version
-
     name = "${local.name}-asg-sg"
   }
 }
 
 unit "sg_to_db_sg_rule" {
-  // NOTE: Take note that this source here uses
-  // a Git URL instead of a local path.
-  //
-  // This is because units and stacks are generated
-  // as shallow directories when consumed.
-  //
-  // Assume that a user consuming this stack will exclusively have access
-  // to the directory this file is in, and nothing else in this repository.
-  //
-  // If you need to use SSH to authenticate, you can swap the source URL to a
-  // Git SSH URL, e.g., "git::git@github.com:gruntwork-io/terragrunt-infrastructure-catalog-example.git//..."
-  source = "github.com/gruntwork-io/terragrunt-infrastructure-catalog-example//units/sg-to-db-sg-rule?ref=${values.version}"
+  source                 = "../..//units/sg-to-db-sg-rule"
+  update_source_with_cas = true
 
   path = "rules/sg-to-db-sg-rule"
 
-  values = {
-    version = values.version
+  autoinclude {
+    dependency "sg" {
+      config_path = unit.asg_sg.path
 
-    // These paths are used for relative references
-    // to the service and db units as dependencies.
-    sg_path = "../../sgs/asg"
-    db_path = "../../db"
+      mock_outputs = {
+        id = "sg-1234567890"
+      }
+    }
+
+    dependency "db" {
+      config_path = unit.db.path
+
+      mock_outputs = {
+        db_security_group_id = "sg-1234567890"
+      }
+    }
+
+    inputs = {
+      security_group_id        = dependency.db.outputs.db_security_group_id
+      from_port                = 3306
+      to_port                  = 3306
+      source_security_group_id = dependency.sg.outputs.id
+    }
   }
 }

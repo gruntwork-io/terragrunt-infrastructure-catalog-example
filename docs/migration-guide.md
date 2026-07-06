@@ -15,3 +15,13 @@ Follow the steps in the [terragrunt-infrastructure-live-stacks-example migration
 ## Step 3: Start testing your units and stacks
 
 Take a look at the tests in [test/terragrunt](/test/terragrunt) and use those patterns to start testing your units and stacks to confirm that they're reliably reproducible.
+
+## Step 4: Adopt the Terragrunt 1.1 features
+
+This repository requires **Terragrunt 1.1 or newer** and uses three features introduced in 1.1:
+
+- relative in-repo sources via `update_source_with_cas`
+- stack dependency wiring via `autoinclude`
+- application-source tracking via `mark_glob_as_read`
+
+For a step-by-step walkthrough of adopting them, see the [Terragrunt 1.1 migration guide](/docs/1.1-migration-guide.md).

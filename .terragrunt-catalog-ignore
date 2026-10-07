@@ -1,0 +1,8 @@
+# Units here read their inputs from `values`, so only the stacks that
+# reference them can use them. They can't be scaffolded on their own.
+units
+units/**
+
+# Examples exercise the modules, units and stacks for tests and docs.
+examples
+examples/**

@@ -35,4 +35,5 @@ inputs = {
   # Optional inputs
   memory  = try(values.memory, 128)
   timeout = try(values.timeout, 3)
+  environment_variables = try(values.environment_variables, null)
 }

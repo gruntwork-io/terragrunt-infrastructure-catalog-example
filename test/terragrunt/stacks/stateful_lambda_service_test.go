@@ -22,7 +22,14 @@ func TestStackStatefulLambdaService(t *testing.T) {
 
 	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
 
-	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "lambda_service.function_url")
+	url, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"stack",
+		"output",
+		"-raw",
+		"lambda_service.function_url",
+	)
 	require.NoError(t, err)
 
 	startTime := time.Now()

@@ -22,7 +22,14 @@ func TestStackStatefulECSService(t *testing.T) {
 
 	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
 
-	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "service.url")
+	url, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"stack",
+		"output",
+		"-raw",
+		"service.url",
+	)
 	require.NoError(t, err)
 
 	startTime := time.Now()

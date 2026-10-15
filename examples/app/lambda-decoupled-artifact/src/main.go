@@ -15,7 +15,10 @@ type Response struct {
 	Version string `json:"version"`
 }
 
-func handleRequest(ctx context.Context, event events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
+func handleRequest(
+	ctx context.Context,
+	event events.LambdaFunctionURLRequest,
+) (events.LambdaFunctionURLResponse, error) {
 	version := os.Getenv("VERSION")
 	if version == "" {
 		log.Printf("WARNING: VERSION environment variable is not set")

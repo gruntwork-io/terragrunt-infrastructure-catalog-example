@@ -96,7 +96,8 @@ func getMovie(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var movie Movie
-	err := db.QueryRow("SELECT id, title, release_year FROM movies WHERE id = ?", id).Scan(&movie.ID, &movie.Title, &movie.ReleaseYear)
+	err := db.QueryRow("SELECT id, title, release_year FROM movies WHERE id = ?", id).
+		Scan(&movie.ID, &movie.Title, &movie.ReleaseYear)
 	if err == sql.ErrNoRows {
 		http.Error(w, "Movie not found", http.StatusNotFound)
 		return

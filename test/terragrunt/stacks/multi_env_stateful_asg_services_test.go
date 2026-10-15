@@ -28,14 +28,35 @@ func TestStackMultiEnvStatefulASGService(t *testing.T) {
 	require.DirExists(t, filepath.Join(stackDir, "prod", ".terragrunt-stack", "alarms"))
 	require.NoDirExists(t, filepath.Join(stackDir, "non-prod", ".terragrunt-stack", "alarms"))
 
-	alarmTopicARN, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", `environment["prod"].alarms.sns_topic_arn`)
+	alarmTopicARN, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"stack",
+		"output",
+		"-raw",
+		`environment["prod"].alarms.sns_topic_arn`,
+	)
 	require.NoError(t, err)
 	require.Contains(t, alarmTopicARN, ":multi-env-asg-prod-alarms")
 
-	non_prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", `environment["non-prod"].service.url`)
+	non_prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"stack",
+		"output",
+		"-raw",
+		`environment["non-prod"].service.url`,
+	)
 	require.NoError(t, err)
 
-	prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", `environment["prod"].service.url`)
+	prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"stack",
+		"output",
+		"-raw",
+		`environment["prod"].service.url`,
+	)
 	require.NoError(t, err)
 
 	startTime := time.Now()
@@ -46,10 +67,42 @@ func TestStackMultiEnvStatefulASGService(t *testing.T) {
 	t.Logf("Service started in %s", duration)
 
 	expectedMoviesRouteResponse := `[{"id":1,"title":"The Matrix","releaseYear":1999},{"id":2,"title":"The Matrix Reloaded","releaseYear":2003},{"id":3,"title":"The Matrix Revolutions","releaseYear":2003}]`
-	http_helper.HttpGetWithRetry(t, non_prod_url+"/movies", nil, 200, expectedMoviesRouteResponse, 30, 5*time.Second)
-	http_helper.HttpGetWithRetry(t, prod_url+"/movies", nil, 200, expectedMoviesRouteResponse, 30, 5*time.Second)
+	http_helper.HttpGetWithRetry(
+		t,
+		non_prod_url+"/movies",
+		nil,
+		200,
+		expectedMoviesRouteResponse,
+		30,
+		5*time.Second,
+	)
+	http_helper.HttpGetWithRetry(
+		t,
+		prod_url+"/movies",
+		nil,
+		200,
+		expectedMoviesRouteResponse,
+		30,
+		5*time.Second,
+	)
 
 	expectedMovieRouteResponse := `{"id":1,"title":"The Matrix","releaseYear":1999}`
-	http_helper.HttpGetWithRetry(t, non_prod_url+"/movies/1", nil, 200, expectedMovieRouteResponse, 30, 5*time.Second)
-	http_helper.HttpGetWithRetry(t, prod_url+"/movies/1", nil, 200, expectedMovieRouteResponse, 30, 5*time.Second)
+	http_helper.HttpGetWithRetry(
+		t,
+		non_prod_url+"/movies/1",
+		nil,
+		200,
+		expectedMovieRouteResponse,
+		30,
+		5*time.Second,
+	)
+	http_helper.HttpGetWithRetry(
+		t,
+		prod_url+"/movies/1",
+		nil,
+		200,
+		expectedMovieRouteResponse,
+		30,
+		5*time.Second,
+	)
 }

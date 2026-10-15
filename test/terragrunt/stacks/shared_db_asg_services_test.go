@@ -27,14 +27,37 @@ func TestStackSharedDBASGServices(t *testing.T) {
 	expectedMovieRouteResponse := `{"id":1,"title":"The Matrix","releaseYear":1999}`
 
 	for _, service := range []string{"api", "web"} {
-		url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", fmt.Sprintf("service[%q].url", service))
+		url, err := terraform.RunTerraformCommandAndGetStdoutE(
+			t,
+			terraformOptions,
+			"stack",
+			"output",
+			"-raw",
+			fmt.Sprintf("service[%q].url", service),
+		)
 		require.NoError(t, err)
 
 		startTime := time.Now()
 		http_helper.HttpGetWithRetry(t, url, nil, 200, "OK", 60, 1*time.Minute)
 		t.Logf("Service %s started in %s", service, time.Since(startTime))
 
-		http_helper.HttpGetWithRetry(t, url+"/movies", nil, 200, expectedMoviesRouteResponse, 30, 5*time.Second)
-		http_helper.HttpGetWithRetry(t, url+"/movies/1", nil, 200, expectedMovieRouteResponse, 30, 5*time.Second)
+		http_helper.HttpGetWithRetry(
+			t,
+			url+"/movies",
+			nil,
+			200,
+			expectedMoviesRouteResponse,
+			30,
+			5*time.Second,
+		)
+		http_helper.HttpGetWithRetry(
+			t,
+			url+"/movies/1",
+			nil,
+			200,
+			expectedMovieRouteResponse,
+			30,
+			5*time.Second,
+		)
 	}
 }

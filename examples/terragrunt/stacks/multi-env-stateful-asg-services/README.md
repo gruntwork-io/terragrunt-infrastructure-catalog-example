@@ -24,6 +24,12 @@ To deploy this example:
    terragrunt stack output
    ```
 
+   Each environment is keyed by its name, so you can read a single value by its address:
+
+   ```bash
+   terragrunt stack output -raw 'environment["prod"].service.url'
+   ```
+
 ## Architecture
 
 The example deploys two environments (`non-prod` and `prod`), each with:
@@ -37,17 +43,41 @@ The example deploys two environments (`non-prod` and `prod`), each with:
 
 ## Configuration
 
-The example is configured through two stacks in the `terragrunt.stack.hcl` file, each with the following parameters:
+The `terragrunt.stack.hcl` file declares one `stack` block and expands it with `for_each` over `local.environments`, generating one copy of the [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service) stack per key:
 
-| Parameter       | Description                                  | Default                |
-|-----------------|----------------------------------------------|------------------------|
-| `name`          | Name of the service and associated resources | `stateful-asg-service` |
-| `instance_type` | EC2 instance type                            | `t4g.micro`            |
-| `min_size`      | Minimum number of instances in the ASG       | `2`                    |
-| `max_size`      | Maximum number of instances in the ASG       | `4`                    |
-| `server_port`   | Port on which the application listens        | `3000`                 |
-| `alb_port`      | Port on which the ALB listens                | `80`                   |
-| `db_port`       | Port on which MySQL listens                  | `3306`                 |
+```hcl
+stack "environment" {
+  expansion {
+    for_each = local.environments
+  }
+
+  source = "../../../..//stacks/ec2-asg-stateful-service"
+  path   = each.key
+
+  values = {
+    name     = "multi-env-asg-${each.key}"
+    min_size = each.value.min_size
+    # ...
+  }
+}
+```
+
+Each environment sets the following:
+
+| Field               | Description                                    | `non-prod` | `prod` |
+|---------------------|------------------------------------------------|------------|--------|
+| `min_size`          | Minimum number of instances in the ASG         | `2`        | `3`    |
+| `max_size`          | Maximum number of instances in the ASG         | `3`        | `5`    |
+| `allocated_storage` | Storage for the MySQL database, in GB          | `50`       | `100`  |
+| `enable_alarms`     | Whether to create CloudWatch alarms on the ALB | `false`    | `true` |
+
+Everything else (instance types, ports, database engine settings) is the same in both environments and set directly in the `values` map.
+
+`enable_alarms` sets the `enabled` attribute on the stack's optional `alarms` unit. Prod generates it, with alarms on ALB 5XX errors and unhealthy hosts that notify an SNS topic. Non-prod doesn't generate the unit at all. Subscribe to the topic to receive the notifications:
+
+```bash
+terragrunt stack output -raw 'environment["prod"].alarms.sns_topic_arn'
+```
 
 ## Implementation Details
 
@@ -117,10 +147,19 @@ Components (per environment):
 - MySQL database (DB) for persistent storage
 - Security group rules controlling access between ASG and MySQL on port 3306
 - IAM roles and policies for the EC2 instances
+- In prod only, CloudWatch alarms on the ALB and an SNS topic for their notifications
 
 ## Environment Management
 
-This example supports multiple environments (`non-prod` and `prod`) via re-usable stacks.
+This example supports multiple environments (`non-prod` and `prod`) via re-usable stacks. To add an environment, add a key to `local.environments`. Terragrunt generates it at `.terragrunt-stack/<key>`, and the existing environments keep their paths and state.
+
+Removing a key stops Terragrunt from generating that environment, but leaves its infrastructure deployed. Destroy the environment before you remove its key:
+
+```bash
+terragrunt run --all --filter './.terragrunt-stack/prod/**' -- destroy
+```
+
+Then regenerate with `--source-update` to clear its directory out of `.terragrunt-stack`.
 
 Each environment can have its own:
 
@@ -128,6 +167,7 @@ Each environment can have its own:
 - Instance types and sizes
 - Scaling policies
 - Database configurations
+- Optional components, such as alarms
 
 ## Cleanup
 

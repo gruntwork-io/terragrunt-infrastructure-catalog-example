@@ -124,3 +124,32 @@ unit "sg_to_db_sg_rule" {
     }
   }
 }
+
+unit "alarms" {
+  enabled = try(values.enable_alarms, false)
+
+  source                 = "../..//units/alb-alarms"
+  update_source_with_cas = true
+
+  path = "alarms"
+
+  values = {
+    name = local.name
+  }
+
+  autoinclude {
+    dependency "service" {
+      config_path = unit.service.path
+
+      mock_outputs = {
+        alb_arn_suffix          = "app/mock-alb/1234567890abcdef"
+        target_group_arn_suffix = "targetgroup/mock-tg/1234567890abcdef"
+      }
+    }
+
+    inputs = {
+      alb_arn_suffix          = dependency.service.outputs.alb_arn_suffix
+      target_group_arn_suffix = dependency.service.outputs.target_group_arn_suffix
+    }
+  }
+}

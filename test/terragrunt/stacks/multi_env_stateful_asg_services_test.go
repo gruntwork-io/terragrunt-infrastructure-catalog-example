@@ -1,6 +1,7 @@
 package terragrunt_stacks_test
 
 import (
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -22,10 +23,19 @@ func TestStackMultiEnvStatefulASGService(t *testing.T) {
 
 	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
 
-	non_prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "non_prod.service.url")
+	// Only prod sets enable_alarms, so non-prod skips the alarms unit.
+	stackDir := filepath.Join(terraformOptions.TerraformDir, ".terragrunt-stack")
+	require.DirExists(t, filepath.Join(stackDir, "prod", ".terragrunt-stack", "alarms"))
+	require.NoDirExists(t, filepath.Join(stackDir, "non-prod", ".terragrunt-stack", "alarms"))
+
+	alarmTopicARN, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", `environment["prod"].alarms.sns_topic_arn`)
+	require.NoError(t, err)
+	require.Contains(t, alarmTopicARN, ":multi-env-asg-prod-alarms")
+
+	non_prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", `environment["non-prod"].service.url`)
 	require.NoError(t, err)
 
-	prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "prod.service.url")
+	prod_url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", `environment["prod"].service.url`)
 	require.NoError(t, err)
 
 	startTime := time.Now()

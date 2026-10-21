@@ -16,6 +16,8 @@ resource "aws_autoscaling_group" "asg" {
   min_size = var.min_size
   max_size = var.max_size
 
+  wait_for_elb_capacity = var.min_size
+
   tag {
     key                 = "Name"
     value               = var.name

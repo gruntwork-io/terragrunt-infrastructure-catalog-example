@@ -22,7 +22,13 @@ func TestUnitEC2ASGService(t *testing.T) {
 
 	terraform.RunTerraformCommand(t, terraformOptions, "apply", "-auto-approve")
 
-	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "output", "-raw", "url")
+	url, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"output",
+		"-raw",
+		"url",
+	)
 	require.NoError(t, err)
 
 	startTime := time.Now()

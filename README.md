@@ -50,9 +50,15 @@ The steps for doing this are the following:
 
 To use this repository, you'll want to make sure you have the following installed:
 
-- [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/)
+- [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/) (**minimum version 1.2**)
 - [OpenTofu](https://opentofu.org/docs/intro/install/) (or [Terraform](https://developer.hashicorp.com/terraform/install))
 - [Go](https://go.dev/doc/install)
+
+> [!IMPORTANT]
+>
+> Terragrunt **1.2 or newer** is required. The stacks and examples here repeat units and stacks with [`expansion`](https://docs.terragrunt.com/reference/hcl/blocks#expansion) blocks, and switch optional units on and off with the [`enabled`](https://docs.terragrunt.com/reference/hcl/blocks#enabled-vs-expansion) attribute. For a walkthrough of adopting these features in your own catalog, see the [Terragrunt 1.2 migration guide](/docs/1.2-migration-guide.md).
+>
+> The [docs](/docs) directory also has migration guides for earlier releases.
 
 To simplify the process of installing these tools, you can install [mise](https://mise.jdx.dev/), then run the following to concurrently install all the tools you need, pinned to the versions they were tested with (as tracked in the [mise.toml](./mise.toml) file):
 
@@ -71,6 +77,7 @@ This repository contains the following components to help you get started on bui
 
 ### OpenTofu Modules
 
+- [alb-alarms](/modules/alb-alarms): An example OpenTofu module that provisions CloudWatch alarms for an Application Load Balancer (ALB), and an SNS topic for their notifications.
 - [ec2-asg-service](/modules/ec2-asg-service): An example OpenTofu module that provisions an AWS EC2 Auto Scaling Group (ASG) with an Application Load Balancer (ALB) in front of it.
 - [ecr-repository](/modules/ecr-repository): An example OpenTofu module that provisions an Amazon Elastic Container Registry (ECR) repository.
 - [ecs-fargate-service](/modules/ecs-fargate-service): An example OpenTofu module that provisions an AWS ECS Fargate service for a containerized application.
@@ -84,6 +91,7 @@ This repository contains the following components to help you get started on bui
 
 ### Terragrunt Units
 
+- [alb-alarms](/units/alb-alarms): An example Terragrunt unit that provisions CloudWatch alarms for an ALB.
 - [ec2-asg-stateful-service](/units/ec2-asg-stateful-service): An example Terragrunt unit that provisions the EC2 ASG service with persistent state via integration with a MySQL database.
 - [ecr-repository](/units/ecr-repository): An example Terragrunt unit that provisions an ECR repository.
 - [ecs-fargate-stateful-service](/units/ecs-fargate-stateful-service): An example Terragrunt unit that provisions the ECS Fargate service with persistent state via integration with a MySQL database.
@@ -98,7 +106,7 @@ This repository contains the following components to help you get started on bui
 
 ### Terragrunt Stacks
 
-- [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service): An example Terragrunt stack that provisions an EC2 ASG service with an Application Load Balancer (ALB) in front of it, and a MySQL database for state storage. This stack is intended to be provisioned multiple times across multiple environments.
+- [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service): An example Terragrunt stack that provisions an EC2 ASG service with an Application Load Balancer (ALB) in front of it, and a MySQL database for state storage. This stack is intended to be provisioned multiple times across multiple environments. Setting the optional `enable_alarms` value to `true` adds CloudWatch alarms on the ALB.
 
 ### Examples
 

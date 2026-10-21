@@ -15,7 +15,7 @@ func TestModuleECRRepository(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir:    "../../examples/tofu/ecr-repository",
 		TerraformBinary: "tofu",
-		Vars: map[string]interface{}{
+		Vars: map[string]any{
 			"name":                 strings.ToLower(fmt.Sprintf("ecr-test-%s", random.UniqueId())),
 			"image_tag_mutability": "MUTABLE",
 			"force_delete":         true,

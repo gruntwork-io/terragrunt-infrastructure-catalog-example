@@ -17,7 +17,7 @@ func TestModuleLambdaService(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir:    "../../examples/tofu/lambda-service",
 		TerraformBinary: "tofu",
-		Vars: map[string]interface{}{
+		Vars: map[string]any{
 			"name": fmt.Sprintf("lambda-service-test-%s", random.UniqueId()),
 		},
 	}

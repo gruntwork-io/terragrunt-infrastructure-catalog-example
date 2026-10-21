@@ -22,7 +22,13 @@ func TestUnitLambdaService(t *testing.T) {
 
 	terraform.RunTerraformCommand(t, terraformOptions, "apply", "-auto-approve")
 
-	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "output", "-raw", "function_url")
+	url, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"output",
+		"-raw",
+		"function_url",
+	)
 	require.NoError(t, err)
 
 	startTime := time.Now()

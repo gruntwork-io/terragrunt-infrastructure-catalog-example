@@ -44,7 +44,10 @@ func init() {
 	dynamoDBClient = dynamodb.NewFromConfig(cfg)
 }
 
-func handleRequest(ctx context.Context, event events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
+func handleRequest(
+	ctx context.Context,
+	event events.LambdaFunctionURLRequest,
+) (events.LambdaFunctionURLResponse, error) {
 	method := event.RequestContext.HTTP.Method
 
 	switch method {

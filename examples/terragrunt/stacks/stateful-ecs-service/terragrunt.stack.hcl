@@ -10,15 +10,14 @@ locals {
 }
 
 unit "ecr_repository" {
-  source = "../../../../units/ecr-repository"
+  // The `//` marks the repository root. That context lets each generated unit
+  // properly use `update_source_with_cas` to find its relative paths within the
+  // catalog and materialize them from the CAS.
+  source = "../../../..//units/ecr-repository"
 
   path = "ecr-repository"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
     name = local.name
 
     force_delete = true
@@ -26,15 +25,11 @@ unit "ecr_repository" {
 }
 
 unit "service" {
-  source = "../../../../units/ecs-fargate-stateful-service"
+  source = "../../../..//units/ecs-fargate-stateful-service"
 
   path = "service"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
     name = local.name
 
     desired_count  = 2
@@ -45,24 +40,95 @@ unit "service" {
 
     db_username = local.db_username
     db_password = local.db_password
+  }
 
-    service_sg_path      = "../sgs/service"
-    service_sg_rule_path = "../rules/service-to-db-sg-rule"
-    db_path              = "../db"
-    ecr_path             = "../ecr-repository"
+  autoinclude {
+    dependency "service_sg" {
+      config_path = unit.service_sg.path
+
+      mock_outputs = {
+        id = "sg-1234567890"
+      }
+    }
+
+    dependency "db" {
+      config_path = unit.db.path
+
+      mock_outputs = {
+        endpoint = "mock-endpoint:mock-port"
+        db_name  = "mock-db-name"
+      }
+    }
+
+    dependency "ecr" {
+      config_path = unit.ecr_repository.path
+
+      mock_outputs = {
+        repository_url = "mock-url"
+      }
+    }
+
+    dependencies {
+      paths = [unit.service_to_db_sg_rule.path]
+    }
+
+    terraform {
+      before_hook "push" {
+        commands = ["plan", "apply"]
+        execute  = ["scripts/push.sh", "src", dependency.ecr.outputs.repository_url]
+      }
+    }
+
+    inputs = {
+      service_sg_id = dependency.service_sg.outputs.id
+
+      container_definitions = jsonencode([
+        {
+          name      = values.name
+          image     = "${dependency.ecr.outputs.repository_url}:${run_cmd("--terragrunt-quiet", "scripts/sha.sh", "src")}"
+          essential = true
+          memory    = values.memory
+
+          portMappings = [
+            {
+              containerPort = values.container_port
+            }
+          ]
+
+          environment = [
+            {
+              name  = "DB_HOST"
+              value = split(":", dependency.db.outputs.endpoint)[0]
+            },
+            {
+              name  = "DB_USER"
+              value = values.db_username
+            },
+            {
+              name  = "DB_PASSWORD"
+              value = values.db_password
+            },
+            {
+              name  = "DB_NAME"
+              value = dependency.db.outputs.db_name
+            },
+            {
+              name  = "DB_PORT"
+              value = split(":", dependency.db.outputs.endpoint)[1]
+            }
+          ]
+        }
+      ])
+    }
   }
 }
 
 unit "db" {
-  source = "../../../../units/mysql"
+  source = "../../../..//units/mysql"
 
   path = "db"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
     name              = "${replace(local.name, "-", "")}db"
     instance_class    = "db.t4g.micro"
     allocated_storage = 20
@@ -77,32 +143,42 @@ unit "db" {
 }
 
 unit "service_sg" {
-  source = "../../../../units/sg"
+  source = "../../../..//units/sg"
 
   path = "sgs/service"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
     name = "${local.name}-service-sg"
   }
 }
 
 unit "service_to_db_sg_rule" {
-  source = "../../../../units/sg-to-db-sg-rule"
+  source = "../../../..//units/sg-to-db-sg-rule"
 
   path = "rules/service-to-db-sg-rule"
 
-  values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
+  autoinclude {
+    dependency "sg" {
+      config_path = unit.service_sg.path
 
-    // These paths are used for relative references
-    // to the service and db units as dependencies.
-    sg_path = "../../sgs/service"
-    db_path = "../../db"
+      mock_outputs = {
+        id = "sg-1234567890"
+      }
+    }
+
+    dependency "db" {
+      config_path = unit.db.path
+
+      mock_outputs = {
+        db_security_group_id = "sg-1234567890"
+      }
+    }
+
+    inputs = {
+      security_group_id        = dependency.db.outputs.db_security_group_id
+      from_port                = 3306
+      to_port                  = 3306
+      source_security_group_id = dependency.sg.outputs.id
+    }
   }
 }

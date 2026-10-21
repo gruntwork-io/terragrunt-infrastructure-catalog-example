@@ -33,7 +33,14 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 
 	terraform.RunTerraformCommand(t, terraformOptions, "stack", "run", "apply")
 
-	url, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "lambda_service.function_url")
+	url, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"stack",
+		"output",
+		"-raw",
+		"lambda_service.function_url",
+	)
 	require.NoError(t, err)
 
 	response, err := http.Get(url)
@@ -80,11 +87,20 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	// Now, we'll explicitly run the push.sh script in
 	// ../../../examples/app/lambda-decoupled-artifact/scripts/push.sh
 	// to update the lambda function code in s3.
-	pushScript, err := filepath.Abs("../../../examples/app/lambda-decoupled-artifact/scripts/push.sh")
+	pushScript, err := filepath.Abs(
+		"../../../examples/app/lambda-decoupled-artifact/scripts/push.sh",
+	)
 	require.NoError(t, err)
 
 	// Grab the bucket name from stack output
-	bucketName, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "s3.name")
+	bucketName, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"stack",
+		"output",
+		"-raw",
+		"s3.name",
+	)
 	require.NoError(t, err)
 
 	// We're just going to hardcode the s3 key as handler.zip for now.
@@ -97,7 +113,9 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 
 	// Set the package script to the package.sh script in the lambda-decoupled-artifact
 	// directory in the examples/app directory.
-	packageScript, err := filepath.Abs("../../../examples/app/lambda-decoupled-artifact/scripts/package.sh")
+	packageScript, err := filepath.Abs(
+		"../../../examples/app/lambda-decoupled-artifact/scripts/package.sh",
+	)
 	require.NoError(t, err)
 
 	// Set the package path to the path of the lambda-decoupled-artifact
@@ -122,7 +140,14 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 	lambdaClient := lambda.NewFromConfig(cfg)
 
 	// Grab the function name from stack output
-	functionName, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-raw", "lambda_service.function_name")
+	functionName, err := terraform.RunTerraformCommandAndGetStdoutE(
+		t,
+		terraformOptions,
+		"stack",
+		"output",
+		"-raw",
+		"lambda_service.function_name",
+	)
 	require.NoError(t, err)
 
 	// Use the S3 client to get the latest version ID of the object
@@ -160,12 +185,15 @@ func TestStackDecoupledLambdaService(t *testing.T) {
 
 	// Also update the VERSION environment variable for the lambda function
 	// to the new version.
-	_, err = lambdaClient.UpdateFunctionConfiguration(context.TODO(), &lambda.UpdateFunctionConfigurationInput{
-		FunctionName: aws.String(functionName),
-		Environment: &types.Environment{
-			Variables: map[string]string{"VERSION": *head.VersionId},
+	_, err = lambdaClient.UpdateFunctionConfiguration(
+		context.TODO(),
+		&lambda.UpdateFunctionConfigurationInput{
+			FunctionName: aws.String(functionName),
+			Environment: &types.Environment{
+				Variables: map[string]string{"VERSION": *head.VersionId},
+			},
 		},
-	})
+	)
 	require.NoError(t, err)
 
 	// Wait for the function configuration update to complete before doing a GET request

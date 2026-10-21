@@ -3,15 +3,14 @@ locals {
 }
 
 unit "lambda_service" {
-  source = "../../../../units/lambda-stateful-service"
+  // The `//` marks the repository root. That context lets each generated unit
+  // properly use `update_source_with_cas` to find its relative paths within the
+  // catalog and materialize them from the CAS.
+  source = "../../../..//units/lambda-stateful-service"
 
   path = "service"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
     name = local.name
 
     // Required inputs
@@ -23,41 +22,90 @@ unit "lambda_service" {
     // Optional inputs
     memory  = 128
     timeout = 3
+  }
 
-    // Dependency paths
-    role_path           = "../roles/lambda-iam-role-to-dynamodb"
-    dynamodb_table_path = "../db"
+  autoinclude {
+    dependency "role" {
+      config_path = unit.role.path
+
+      mock_outputs = {
+        arn = "arn:aws:iam::123456789012:role/lambda-iam-role-to-dynamodb"
+      }
+    }
+
+    dependency "dynamodb_table" {
+      config_path = unit.db.path
+
+      mock_outputs = {
+        name = "dynamodb-table"
+      }
+    }
+
+    inputs = {
+      iam_role_arn = dependency.role.outputs.arn
+
+      environment_variables = {
+        DYNAMODB_TABLE = dependency.dynamodb_table.outputs.name
+      }
+    }
   }
 }
 
 unit "db" {
-  source = "../../../../units/dynamodb-table"
+  source = "../../../..//units/dynamodb-table"
 
   path = "db"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
-    name              = "${local.name}-db"
-    hash_key          = "Id"
-    hash_key_type     = "S"
+    name          = "${local.name}-db"
+    hash_key      = "Id"
+    hash_key_type = "S"
   }
 }
 
 unit "role" {
-  source = "../../../../units/lambda-iam-role-to-dynamodb"
+  source = "../../../..//units/lambda-iam-role-to-dynamodb"
 
   path = "roles/lambda-iam-role-to-dynamodb"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
     name = "${local.name}-role"
+  }
 
-    dynamodb_table_path = "../../db"
+  autoinclude {
+    dependency "dynamodb_table" {
+      config_path = unit.db.path
+
+      mock_outputs = {
+        arn = "arn:aws:dynamodb:us-east-1:123456789012:table/example-table"
+      }
+    }
+
+    inputs = {
+      policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+          {
+            Action = [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ]
+            Effect   = "Allow"
+            Resource = "arn:aws:logs:*:*:*"
+          },
+          {
+            Action = [
+              "dynamodb:GetItem",
+              "dynamodb:PutItem",
+              "dynamodb:UpdateItem",
+              "dynamodb:DeleteItem"
+            ]
+            Effect   = "Allow"
+            Resource = dependency.dynamodb_table.outputs.arn
+          }
+        ]
+      })
+    }
   }
 }

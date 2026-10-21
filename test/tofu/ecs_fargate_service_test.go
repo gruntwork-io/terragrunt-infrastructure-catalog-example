@@ -17,7 +17,7 @@ func TestModuleECSFargateService(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir:    "../../examples/tofu/ecs-fargate-service",
 		TerraformBinary: "tofu",
-		Vars: map[string]interface{}{
+		Vars: map[string]any{
 			"name": fmt.Sprintf("ecs-fargate-service-test-%s", random.UniqueId()),
 		},
 	}

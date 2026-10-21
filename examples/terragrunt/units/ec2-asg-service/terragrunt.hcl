@@ -19,16 +19,16 @@ terraform {
 }
 
 locals {
-    server_port = 8080
+  server_port = 8080
 }
 
 inputs = {
-    name          = "ec2-asg-service"
-    instance_type = "t4g.micro"
-    min_size      = 2
-    max_size      = 4
-    server_port   = local.server_port
-    alb_port      = 80
+  name          = "ec2-asg-service"
+  instance_type = "t4g.micro"
+  min_size      = 2
+  max_size      = 4
+  server_port   = local.server_port
+  alb_port      = 80
 
   user_data = base64encode(templatefile("${get_terragrunt_dir()}/scripts/user-data.sh", { server_port = local.server_port }))
 }

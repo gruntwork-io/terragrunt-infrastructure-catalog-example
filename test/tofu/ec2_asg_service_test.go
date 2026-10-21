@@ -17,7 +17,7 @@ func TestModuleEC2ASGService(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir:    "../../examples/tofu/ec2-asg-service",
 		TerraformBinary: "tofu",
-		Vars: map[string]interface{}{
+		Vars: map[string]any{
 			"name": fmt.Sprintf("ec2-asg-test-%s", random.UniqueId()),
 		},
 	}

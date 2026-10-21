@@ -5,15 +5,14 @@ locals {
 }
 
 unit "lambda_service" {
-  source = "../../../../units/lambda-decoupled-service"
+  // The `//` marks the repository root. That context lets each generated unit
+  // properly use `update_source_with_cas` to find its relative paths within the
+  // catalog and materialize them from the CAS.
+  source = "../../../..//units/lambda-decoupled-service"
 
   path = "service"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
     name = local.name
 
     // Required inputs
@@ -26,29 +25,41 @@ unit "lambda_service" {
     // Optional inputs
     memory  = 128
     timeout = 3
+  }
 
-    // Dependency paths
-    s3_path = "../s3"
+  autoinclude {
+    dependency "s3" {
+      config_path = unit.s3.path
+
+      mock_outputs = {
+        name = "s3-bucket"
+      }
+    }
+
+    inputs = {
+      s3_bucket         = dependency.s3.outputs.name
+      s3_object_version = run_cmd("--terragrunt-quiet", "scripts/handler-discovery.sh", dependency.s3.outputs.name, values.s3_key)
+
+      environment_variables = {
+        VERSION = run_cmd("--terragrunt-quiet", "scripts/handler-discovery.sh", dependency.s3.outputs.name, values.s3_key)
+      }
+    }
   }
 }
 
 unit "s3" {
-  source = "../../../../units/lambda-artifact-s3-bucket"
+  source = "../../../..//units/lambda-artifact-s3-bucket"
 
   path = "s3"
 
   values = {
-    // This version here is used as the version passed down to the unit
-    // to use when fetching the OpenTofu/Terraform module.
-    version = "main"
-
     name = "${local.name}-s3"
 
     force_destroy = true
 
-    s3_key = local.s3_key
-    src_path = "${get_repo_root()}/examples/app/lambda-decoupled-artifact/src"
+    s3_key         = local.s3_key
+    src_path       = "${get_repo_root()}/examples/app/lambda-decoupled-artifact/src"
     package_script = "${get_repo_root()}/examples/app/lambda-decoupled-artifact/scripts/package.sh"
-    package_path = "${get_repo_root()}/examples/app/lambda-decoupled-artifact/handler.zip"
+    package_path   = "${get_repo_root()}/examples/app/lambda-decoupled-artifact/handler.zip"
   }
 }

@@ -1,7 +1,7 @@
 # Azure App Foundation Example
 
 This is an example of how to use the [azure-app-foundation](/stacks/azure-app-foundation) stack. It provisions the
-pieces an application needs before it can run, using services that cost little or nothing while idle:
+pieces an application needs before it can run:
 
 - [azure-resource-group](/units/azure-resource-group) - Creates the resource group that holds everything else
 - [azure-storage-account](/units/azure-storage-account) - Creates a storage account with a private `data` blob container

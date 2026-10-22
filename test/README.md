@@ -30,7 +30,8 @@ go test -v -timeout 60m -run '<TEST_NAME>' ./...
 The Azure tests carry the `azure` build tag, so the commands above skip them.
 
 1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) and log in with `az login`.
-2. Set the subscription to deploy into: `export ARM_SUBSCRIPTION_ID=<SUBSCRIPTION_ID>`.
+2. Select the subscription to deploy into with `az account set`, and export its ID:
+   `export ARM_SUBSCRIPTION_ID="$(az account show --query id --output tsv)"`.
 3. Run the tests:
 
    ```bash

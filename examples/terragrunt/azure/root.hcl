@@ -3,7 +3,8 @@
 
 locals {
   # Both the provider and the backend need the subscription to deploy into.
-  # Set it with `export ARM_SUBSCRIPTION_ID=<SUBSCRIPTION_ID>`.
+  # After `az account set`, set it with:
+  # export ARM_SUBSCRIPTION_ID="$(az account show --query id --output tsv)"
   subscription_id = get_env("ARM_SUBSCRIPTION_ID")
 }
 

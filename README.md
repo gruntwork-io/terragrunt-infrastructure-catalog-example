@@ -117,13 +117,13 @@ Azure:
 - [sg-to-db-sg-rule](/units/sg-to-db-sg-rule): An example Terragrunt unit that provisions a security group rule for database access.
 - [dynamodb-table](/units/dynamodb-table): An example Terragrunt unit that provisions a DynamoDB table.
 
-Azure: each module above has a matching unit in [units](/units) (e.g. [azure-vnet](/units/azure-vnet)). The units read their inputs from `values`, and the stacks below wire them together.
+Each Azure module listed above has a matching unit in [units](/units) (e.g. [azure-vnet](/units/azure-vnet)). The units read their inputs from `values`, and the stacks below wire them together.
 
 ### Terragrunt Stacks
 
 - [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service): An example Terragrunt stack that provisions an EC2 ASG service with an Application Load Balancer (ALB) in front of it, and a MySQL database for state storage. This stack is intended to be provisioned multiple times across multiple environments. Setting the optional `enable_alarms` value to `true` adds CloudWatch alarms on the ALB.
 - [azure-network](/stacks/azure-network): An example Terragrunt stack that provisions a resource group, a virtual network with subnets, and a network security group attached to every subnet. Each entry in the optional `inbound_rules` value adds a rule to the network security group.
-- [azure-app-foundation](/stacks/azure-app-foundation): An example Terragrunt stack that provisions what an application needs before it runs: a storage account with a blob container and a table, a container registry, and a managed identity that can pull images and read/write the app's data. Setting the optional `enable_alerts` value to `true` adds Azure Monitor alerts on the storage account.
+- [azure-app-foundation](/stacks/azure-app-foundation): An example Terragrunt stack that provisions what an application needs before it runs: a storage account with a blob container and a table, a container registry, and a managed identity that can pull images, read blobs, and read and write table rows. Setting the optional `enable_alerts` value to `true` adds Azure Monitor alerts on the storage account.
 
 ### Examples
 
@@ -280,10 +280,10 @@ Testing OpenTofu/Terraform modules as Terragrunt units is useful to ensure that 
 
 The Azure tests carry the `azure` [build tag](https://pkg.go.dev/cmd/go#hdr-Build_constraints), so a plain `go test ./...` skips them. To run them:
 
-1. Log in with `az login`, and set the subscription to deploy into:
+1. Log in with `az login`, select the subscription to deploy into with `az account set`, and export its ID:
 
    ```bash
-   export ARM_SUBSCRIPTION_ID=<SUBSCRIPTION_ID>
+   export ARM_SUBSCRIPTION_ID="$(az account show --query id --output tsv)"
    ```
 
 2. Run the tests with the `azure` tag from the [test](/test) directory:
@@ -294,11 +294,11 @@ The Azure tests carry the `azure` [build tag](https://pkg.go.dev/cmd/go#hdr-Buil
 
 The stack tests keep their state in a storage account named `tgcatalogtfstate` in the `terragrunt-catalog-example-tfstate` resource group, and create it on the first run. Storage account names are unique across all of Azure, so set `TG_STORAGE_ACCOUNT_PREFIX` to a short prefix of lowercase letters and digits (e.g. `acme`) if that name is taken.
 
-Each test puts its resources in a resource group whose name starts with `tgcattest`, destroys it when it finishes, and then checks the resource group is gone. If a run is cancelled or crashes before it can clean up, delete the leftovers with:
+Each test puts its resources in a resource group whose name starts with `tgcattest`, destroys it when it finishes, and then checks the resource group is gone. If a run is cancelled or crashes before it can clean up, delete the leftovers from the same [test](/test) directory with:
 
 ```bash
-test/scripts/cleanup-azure.sh            # list resource groups older than 3 hours that the tests left behind
-test/scripts/cleanup-azure.sh --delete   # delete them
+scripts/cleanup-azure.sh            # list resource groups older than 3 hours that the tests left behind
+scripts/cleanup-azure.sh --delete   # delete them
 ```
 
 ### Updating Terragrunt units and stacks

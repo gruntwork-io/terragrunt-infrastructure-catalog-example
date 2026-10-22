@@ -7,14 +7,16 @@
 # deletes them. It skips resource groups younger than the cutoff, so it never touches a test that is still running.
 #
 # Usage:
-#   test/scripts/cleanup-azure.sh [--delete] [--prefix <prefix>] [--older-than-hours <hours>]
+#   test/scripts/cleanup-azure.sh [--delete] [--older-than-hours <hours>]
 #
 # Without --delete, the script only lists what it would delete.
 # The subscription comes from ARM_SUBSCRIPTION_ID, or the Azure CLI's current subscription when that isn't set.
 
 set -euo pipefail
 
-prefix="tgcattest"
+# Must match NamePrefix in test/internal/azuretest. It is fixed on purpose: a shorter or empty prefix would match
+# resource groups that have nothing to do with the tests.
+readonly prefix="tgcattest"
 older_than_hours=3
 delete=false
 
@@ -23,10 +25,6 @@ while [[ $# -gt 0 ]]; do
     --delete)
       delete=true
       shift
-      ;;
-    --prefix)
-      prefix="$2"
-      shift 2
       ;;
     --older-than-hours)
       older_than_hours="$2"
@@ -38,6 +36,11 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ ! "$older_than_hours" =~ ^[0-9]+$ ]]; then
+  echo "--older-than-hours must be a whole number of hours, got: ${older_than_hours}" >&2
+  exit 1
+fi
 
 subscription_id="${ARM_SUBSCRIPTION_ID:-$(az account show --query id --output tsv)}"
 

@@ -46,7 +46,7 @@ func TestStackAzureAppFoundation(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, azure.ContainerRegistryExists(t, registryName, resourceGroupName, subscriptionID))
 
-	// The identity gets exactly the roles the stack grants it, and nothing else.
+	// The stack exposes the IDs of its three role assignments.
 	roleAssignmentsJSON, err := terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, "stack", "output", "-json", "app.identity.role_assignment_ids")
 	require.NoError(t, err)
 

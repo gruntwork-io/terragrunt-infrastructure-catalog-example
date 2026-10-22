@@ -9,10 +9,10 @@ This is an example of how to use the [azure-network](/stacks/azure-network) stac
 
 ## Usage
 
-1. Log in to Azure (e.g. `az login`) and set the subscription to deploy into:
+1. Log in to Azure with `az login`, select the subscription to deploy into with `az account set`, and export its ID:
 
    ```bash
-   export ARM_SUBSCRIPTION_ID=<SUBSCRIPTION_ID>
+   export ARM_SUBSCRIPTION_ID="$(az account show --query id --output tsv)"
    ```
 
 2. Navigate to the example directory:

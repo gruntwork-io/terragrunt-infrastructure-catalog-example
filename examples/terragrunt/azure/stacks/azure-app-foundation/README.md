@@ -12,10 +12,10 @@ pieces an application needs before it can run, using services that cost little o
 
 ## Usage
 
-1. Log in to Azure (e.g. `az login`) and set the subscription to deploy into:
+1. Log in to Azure with `az login`, select the subscription to deploy into with `az account set`, and export its ID:
 
    ```bash
-   export ARM_SUBSCRIPTION_ID=<SUBSCRIPTION_ID>
+   export ARM_SUBSCRIPTION_ID="$(az account show --query id --output tsv)"
    ```
 
 2. Storage account and container registry names are unique across all of Azure. Pick a short prefix unique to you,

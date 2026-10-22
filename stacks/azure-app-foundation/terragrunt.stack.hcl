@@ -4,8 +4,10 @@ locals {
   tags     = try(values.tags, {})
 
   // Storage account and container registry names are unique across all of Azure,
-  // and only allow lowercase letters and digits.
-  compact_name = substr(replace(lower(local.name), "-", ""), 0, 20)
+  // and only allow lowercase letters and digits. Keep `name` to 22 characters once
+  // hyphens are removed: longer names fail the storage account name check at plan
+  // time, instead of being cut short and colliding with another stack's names.
+  compact_name = replace(lower(local.name), "-", "")
 }
 
 unit "resource_group" {

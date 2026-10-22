@@ -53,6 +53,7 @@ To use this repository, you'll want to make sure you have the following installe
 - [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/) (**minimum version 1.2**)
 - [OpenTofu](https://opentofu.org/docs/intro/install/) (or [Terraform](https://developer.hashicorp.com/terraform/install))
 - [Go](https://go.dev/doc/install)
+- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) (only for the Azure patterns, to log in with `az login`)
 
 > [!IMPORTANT]
 >
@@ -89,6 +90,18 @@ This repository contains the following components to help you get started on bui
 - [sg-rule](/modules/sg-rule): An example OpenTofu module that provisions security group rules.
 - [dynamodb-table](/modules/dynamodb-table): An example OpenTofu module that provisions a DynamoDB table.
 
+Azure:
+
+- [azure-container-registry](/modules/azure-container-registry): An example OpenTofu module that provisions an Azure Container Registry.
+- [azure-managed-identity](/modules/azure-managed-identity): An example OpenTofu module that provisions a user-assigned managed identity and grants it roles on other resources.
+- [azure-monitor-alerts](/modules/azure-monitor-alerts): An example OpenTofu module that provisions Azure Monitor metric alerts for a resource, and an action group for their notifications.
+- [azure-nsg](/modules/azure-nsg): An example OpenTofu module that provisions a network security group and attaches it to subnets.
+- [azure-nsg-rule](/modules/azure-nsg-rule): An example OpenTofu module that provisions a network security group rule.
+- [azure-resource-group](/modules/azure-resource-group): An example OpenTofu module that provisions a resource group.
+- [azure-storage-account](/modules/azure-storage-account): An example OpenTofu module that provisions a storage account and private blob containers in it.
+- [azure-storage-table](/modules/azure-storage-table): An example OpenTofu module that provisions a table in Azure Table Storage.
+- [azure-vnet](/modules/azure-vnet): An example OpenTofu module that provisions a virtual network and its subnets.
+
 ### Terragrunt Units
 
 - [alb-alarms](/units/alb-alarms): An example Terragrunt unit that provisions CloudWatch alarms for an ALB.
@@ -104,9 +117,13 @@ This repository contains the following components to help you get started on bui
 - [sg-to-db-sg-rule](/units/sg-to-db-sg-rule): An example Terragrunt unit that provisions a security group rule for database access.
 - [dynamodb-table](/units/dynamodb-table): An example Terragrunt unit that provisions a DynamoDB table.
 
+Azure: each module above has a matching unit in [units](/units) (e.g. [azure-vnet](/units/azure-vnet)). The units read their inputs from `values`, and the stacks below wire them together.
+
 ### Terragrunt Stacks
 
 - [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service): An example Terragrunt stack that provisions an EC2 ASG service with an Application Load Balancer (ALB) in front of it, and a MySQL database for state storage. This stack is intended to be provisioned multiple times across multiple environments. Setting the optional `enable_alarms` value to `true` adds CloudWatch alarms on the ALB.
+- [azure-network](/stacks/azure-network): An example Terragrunt stack that provisions a resource group, a virtual network with subnets, and a network security group attached to every subnet. Each entry in the optional `inbound_rules` value adds a rule to the network security group.
+- [azure-app-foundation](/stacks/azure-app-foundation): An example Terragrunt stack that provisions what an application needs before it runs: a storage account with a blob container and a table, a container registry, and a managed identity that can pull images and read/write the app's data. Setting the optional `enable_alerts` value to `true` adds Azure Monitor alerts on the storage account.
 
 ### Examples
 
@@ -258,6 +275,31 @@ TG_BUCKET_PREFIX='acme-' go test -timeout 60m -count=1 -run Test<Something>
 > The `TG_BUCKET_PREFIX` environment variable is used to set the prefix for the OpenTofu/Terraform state bucket as managed by Terragrunt's [Remote State Backend feature](https://terragrunt.gruntwork.io/docs/features/state-backend/). This is used to ensure that the Terragrunt state bucket is unique across all S3 buckets in existence. It's recommended to either set this environment variable to a short prefix that represents your organization (e.g. `acme-`), or to update the value in [examples/terragrunt/root.hcl](/examples/terragrunt/root.hcl) to hard-code a value unique to your organization for the `bucket` attribute.
 
 Testing OpenTofu/Terraform modules as Terragrunt units is useful to ensure that the module can be reliably provisioned as a Terragrunt unit in the future. It can also be useful to validate that certain implementation details of how the module is meant to be consumed can be done reliably. For example, you may want to test that application code that a module depends on is packaged correctly by the [hooks](https://terragrunt.gruntwork.io/docs/features/hooks/) used in the unit, or that the right interface has been exposed for consumption by the unit.
+
+### Testing the Azure patterns
+
+The Azure tests carry the `azure` [build tag](https://pkg.go.dev/cmd/go#hdr-Build_constraints), so a plain `go test ./...` skips them. To run them:
+
+1. Log in with `az login`, and set the subscription to deploy into:
+
+   ```bash
+   export ARM_SUBSCRIPTION_ID=<SUBSCRIPTION_ID>
+   ```
+
+2. Run the tests with the `azure` tag from the [test](/test) directory:
+
+   ```bash
+   go test -tags azure -timeout 60m -count=1 -run Azure ./...
+   ```
+
+The stack tests keep their state in a storage account named `tgcatalogtfstate` in the `terragrunt-catalog-example-tfstate` resource group, and create it on the first run. Storage account names are unique across all of Azure, so set `TG_STORAGE_ACCOUNT_PREFIX` to a short prefix of lowercase letters and digits (e.g. `acme`) if that name is taken.
+
+Each test puts its resources in a resource group whose name starts with `tgcattest`, destroys it when it finishes, and then checks the resource group is gone. If a run is cancelled or crashes before it can clean up, delete the leftovers with:
+
+```bash
+test/scripts/cleanup-azure.sh            # list resource groups older than 3 hours that the tests left behind
+test/scripts/cleanup-azure.sh --delete   # delete them
+```
 
 ### Updating Terragrunt units and stacks
 

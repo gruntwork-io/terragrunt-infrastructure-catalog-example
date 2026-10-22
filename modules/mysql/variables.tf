@@ -18,7 +18,7 @@ variable "allocated_storage" {
 }
 
 variable "storage_type" {
-  description = "The type of storage to use for the DB. Must be one of: standard, gp2, or io1."
+  description = "The type of storage to use for the DB. Must be one of: gp2, gp3, io1, or io2. RDS no longer accepts standard (magnetic) storage for new instances."
   type        = string
 }
 
@@ -45,7 +45,7 @@ variable "skip_final_snapshot" {
 }
 
 variable "engine_version" {
-  description = "The version of MySQL to run. https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html"
+  description = "The version of MySQL to run. A major.minor version such as 8.4 gets the current RDS default patch release; a full version such as 8.4.11 pins it. https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html"
   type        = string
-  default     = "8.4.4"
+  default     = "8.4"
 }

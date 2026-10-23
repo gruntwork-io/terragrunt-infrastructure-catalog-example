@@ -27,6 +27,10 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --older-than-hours)
+      if [[ $# -lt 2 ]]; then
+        echo "--older-than-hours needs a value" >&2
+        exit 1
+      fi
       older_than_hours="$2"
       shift 2
       ;;

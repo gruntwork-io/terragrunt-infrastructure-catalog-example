@@ -18,8 +18,8 @@ pieces an application needs before it can run:
    export ARM_SUBSCRIPTION_ID="$(az account show --query id --output tsv)"
    ```
 
-2. Storage account and container registry names are unique across all of Azure. Pick a short prefix unique to you,
-   using lowercase letters and digits only:
+2. Storage account and container registry names are unique across all of Azure. Pick a prefix unique to you, using
+   at most 19 lowercase letters and digits:
 
    ```bash
    export TG_AZURE_NAME_PREFIX=acme

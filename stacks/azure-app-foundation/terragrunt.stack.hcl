@@ -1,13 +1,11 @@
 locals {
+  // `name` also names the storage account and container registry, which are unique
+  // across all of Azure and only allow lowercase letters and digits. It is used as
+  // is, so two stacks with different names never share those resources. Names with
+  // other characters, or longer than 22 characters, fail at plan time.
   name     = values.name
   location = values.location
   tags     = try(values.tags, {})
-
-  // Storage account and container registry names are unique across all of Azure,
-  // and only allow lowercase letters and digits. Keep `name` to 22 characters once
-  // hyphens are removed: longer names fail the storage account name check at plan
-  // time, instead of being cut short and colliding with another stack's names.
-  compact_name = replace(lower(local.name), "-", "")
 }
 
 unit "resource_group" {
@@ -33,7 +31,7 @@ unit "storage_account" {
   path = "storage-account"
 
   values = {
-    name            = "${local.compact_name}sa"
+    name            = "${local.name}sa"
     location        = local.location
     container_names = try(values.container_names, ["data"])
     tags            = local.tags
@@ -86,7 +84,7 @@ unit "container_registry" {
   path = "container-registry"
 
   values = {
-    name     = "${local.compact_name}acr"
+    name     = "${local.name}acr"
     location = local.location
     tags     = local.tags
   }

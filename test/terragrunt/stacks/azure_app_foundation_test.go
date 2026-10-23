@@ -20,7 +20,7 @@ func TestStackAzureAppFoundation(t *testing.T) {
 
 	subscriptionID := azuretest.SubscriptionID(t)
 	namePrefix := azuretest.UniqueName()
-	resourceGroupName := namePrefix + "-app-rg"
+	resourceGroupName := namePrefix + "app-rg"
 
 	terraformOptions := &terraform.Options{
 		TerraformDir:    "../../../examples/terragrunt/azure/stacks/azure-app-foundation",
@@ -62,6 +62,6 @@ func TestStackAzureAppFoundation(t *testing.T) {
 	require.ElementsMatch(t, []string{"acr_pull", "blob_reader", "table_contributor"}, slices.Collect(maps.Keys(output.App.Identity.RoleAssignmentIDs)))
 
 	// The example sets enable_alerts, so the alerts unit exists.
-	actionGroup := azure.GetActionGroupResource(t, namePrefix+"-app-alerts", resourceGroupName, subscriptionID)
+	actionGroup := azure.GetActionGroupResource(t, namePrefix+"app-alerts", resourceGroupName, subscriptionID)
 	require.True(t, *actionGroup.Enabled)
 }

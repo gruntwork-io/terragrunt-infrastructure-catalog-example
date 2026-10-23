@@ -13,11 +13,11 @@ EOF
 remote_state {
   backend = "s3"
   config = {
-    encrypt        = true
-    bucket         = "${get_env("TG_BUCKET_PREFIX", "")}terragrunt-catalog-example-tfstate"
-    key            = "${path_relative_to_include()}/tf.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "tf-locks"
+    encrypt      = true
+    bucket       = "${get_env("TG_BUCKET_PREFIX", "")}terragrunt-catalog-example-tfstate"
+    key          = "${path_relative_to_include()}/tf.tfstate"
+    region       = "us-east-1"
+    use_lockfile = true
   }
   generate = {
     path      = "backend.tf"

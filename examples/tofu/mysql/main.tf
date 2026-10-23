@@ -18,8 +18,8 @@ module "mysql" {
 
   name              = var.name
   instance_class    = "db.t3.micro"
-  allocated_storage = 5
-  storage_type      = "standard"
+  allocated_storage = 20
+  storage_type      = "gp2"
 
   master_username = var.master_username
   master_password = var.master_password

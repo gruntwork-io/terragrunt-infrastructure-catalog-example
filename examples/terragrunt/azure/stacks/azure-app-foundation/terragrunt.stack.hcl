@@ -9,7 +9,7 @@ stack "app" {
   // The `//` marks the repository root. That context lets each generated unit
   // properly use `update_source_with_cas` to find its relative paths within the
   // catalog and materialize them from the CAS.
-  source = "../../../../..//stacks/azure-app-foundation"
+  source = "${get_repo_root()}//stacks/azure-app-foundation"
 
   path = "app"
 

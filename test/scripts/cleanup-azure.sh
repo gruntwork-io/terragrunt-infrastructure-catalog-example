@@ -53,22 +53,40 @@ cutoff="$(date -u -d "-${older_than_hours} hours" +%Y-%m-%dT%H:%M:%SZ 2>/dev/nul
   date -u -v-"${older_than_hours}"H +%Y-%m-%dT%H:%M:%SZ)"
 
 # `az group list` doesn't return creation times, so ask the ARM API for them directly.
-# ISO 8601 UTC timestamps sort as strings, so a string comparison against the cutoff works.
-resource_groups="$(az rest --method get \
+listing="$(az rest --method get \
   --url "https://management.azure.com/subscriptions/${subscription_id}/resourcegroups?api-version=2021-04-01&\$expand=createdTime" \
-  --query "value[?starts_with(name, '${prefix}') && createdTime < '${cutoff}'].name" \
+  --query "value[?starts_with(name, '${prefix}')].[name, createdTime]" \
   --output tsv)"
 
-if [[ -z "$resource_groups" ]]; then
+resource_groups=()
+
+while IFS=$'\t' read -r resource_group created_time; do
+  [[ -n "$resource_group" ]] || continue
+
+  # Stop on a missing creation time instead of guessing the age. `--output tsv` prints a missing value as `None`.
+  if [[ -z "$created_time" || "$created_time" == None ]]; then
+    echo "Azure returned no creation time for ${resource_group}, so its age is unknown." >&2
+    echo "Once no Azure test is running, delete it with:" >&2
+    echo "  az group delete --subscription ${subscription_id} --name ${resource_group}" >&2
+    exit 1
+  fi
+
+  # ISO 8601 UTC timestamps sort as strings, so a string comparison against the cutoff works.
+  if [[ "$created_time" < "$cutoff" ]]; then
+    resource_groups+=("$resource_group")
+  fi
+done <<<"$listing"
+
+if [[ ${#resource_groups[@]} -eq 0 ]]; then
   echo "No resource groups starting with '${prefix}' created before ${cutoff}."
   exit 0
 fi
 
-while IFS= read -r resource_group; do
+for resource_group in "${resource_groups[@]}"; do
   if [[ "$delete" == true ]]; then
     echo "Deleting ${resource_group}"
     az group delete --subscription "$subscription_id" --name "$resource_group" --yes --no-wait
   else
     echo "Would delete ${resource_group} (re-run with --delete to delete it)"
   fi
-done <<<"$resource_groups"
+done

@@ -8,7 +8,7 @@ stack "network" {
   // The `//` marks the repository root. That context lets each generated unit
   // properly use `update_source_with_cas` to find its relative paths within the
   // catalog and materialize them from the CAS.
-  source = "../../../../..//stacks/azure-network"
+  source = "${get_repo_root()}//stacks/azure-network"
 
   path = "network"
 

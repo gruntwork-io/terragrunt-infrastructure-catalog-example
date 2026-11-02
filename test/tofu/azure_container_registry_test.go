@@ -19,7 +19,7 @@ func TestModuleAzureContainerRegistry(t *testing.T) {
 	name := azuretest.UniqueName()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../examples/tofu/azure-container-registry",
+		TerraformDir:    "../../examples/tofu/azure/container-registry",
 		TerraformBinary: "tofu",
 		Vars: map[string]any{
 			"name": name,

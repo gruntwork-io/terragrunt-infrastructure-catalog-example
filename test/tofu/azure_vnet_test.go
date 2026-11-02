@@ -19,7 +19,7 @@ func TestModuleAzureVNet(t *testing.T) {
 	name := azuretest.UniqueName()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../examples/tofu/azure-vnet",
+		TerraformDir:    "../../examples/tofu/azure/vnet",
 		TerraformBinary: "tofu",
 		Vars: map[string]any{
 			"name": name,

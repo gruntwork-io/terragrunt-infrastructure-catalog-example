@@ -19,7 +19,7 @@ func TestModuleAzureStorageTable(t *testing.T) {
 	name := azuretest.UniqueName()
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../examples/tofu/azure-storage-table",
+		TerraformDir:    "../../examples/tofu/azure/storage-table",
 		TerraformBinary: "tofu",
 		Vars: map[string]any{
 			"name":       name,

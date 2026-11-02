@@ -21,7 +21,7 @@ func TestStackAzureNetwork(t *testing.T) {
 	resourceGroupName := namePrefix + "-network-rg"
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../../examples/terragrunt/azure/stacks/azure-network",
+		TerraformDir:    "../../../examples/terragrunt/azure/stacks/network",
 		TerraformBinary: "terragrunt",
 		EnvVars: map[string]string{
 			"TG_AZURE_NAME_PREFIX": namePrefix,

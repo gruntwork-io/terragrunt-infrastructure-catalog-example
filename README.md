@@ -92,15 +92,15 @@ This repository contains the following components to help you get started on bui
 
 Azure:
 
-- [azure-container-registry](/modules/azure-container-registry): An example OpenTofu module that provisions an Azure Container Registry.
-- [azure-managed-identity](/modules/azure-managed-identity): An example OpenTofu module that provisions a user-assigned managed identity and grants it roles on other resources.
-- [azure-monitor-alerts](/modules/azure-monitor-alerts): An example OpenTofu module that provisions Azure Monitor metric alerts for a resource, and an action group for their notifications.
-- [azure-nsg](/modules/azure-nsg): An example OpenTofu module that provisions a network security group and attaches it to subnets.
-- [azure-nsg-rule](/modules/azure-nsg-rule): An example OpenTofu module that provisions a network security group rule.
-- [azure-resource-group](/modules/azure-resource-group): An example OpenTofu module that provisions a resource group.
-- [azure-storage-account](/modules/azure-storage-account): An example OpenTofu module that provisions a storage account and private blob containers in it.
-- [azure-storage-table](/modules/azure-storage-table): An example OpenTofu module that provisions a table in Azure Table Storage.
-- [azure-vnet](/modules/azure-vnet): An example OpenTofu module that provisions a virtual network and its subnets.
+- [azure/container-registry](/modules/azure/container-registry): An example OpenTofu module that provisions an Azure Container Registry.
+- [azure/managed-identity](/modules/azure/managed-identity): An example OpenTofu module that provisions a user-assigned managed identity and grants it roles on other resources.
+- [azure/monitor-alerts](/modules/azure/monitor-alerts): An example OpenTofu module that provisions Azure Monitor metric alerts for a resource, and an action group for their notifications.
+- [azure/nsg](/modules/azure/nsg): An example OpenTofu module that provisions a network security group and attaches it to subnets.
+- [azure/nsg-rule](/modules/azure/nsg-rule): An example OpenTofu module that provisions a network security group rule.
+- [azure/resource-group](/modules/azure/resource-group): An example OpenTofu module that provisions a resource group.
+- [azure/storage-account](/modules/azure/storage-account): An example OpenTofu module that provisions a storage account and private blob containers in it.
+- [azure/storage-table](/modules/azure/storage-table): An example OpenTofu module that provisions a table in Azure Table Storage.
+- [azure/vnet](/modules/azure/vnet): An example OpenTofu module that provisions a virtual network and its subnets.
 
 ### Terragrunt Units
 
@@ -117,13 +117,13 @@ Azure:
 - [sg-to-db-sg-rule](/units/sg-to-db-sg-rule): An example Terragrunt unit that provisions a security group rule for database access.
 - [dynamodb-table](/units/dynamodb-table): An example Terragrunt unit that provisions a DynamoDB table.
 
-Each Azure module listed above has a matching unit in [units](/units) (e.g. [azure-vnet](/units/azure-vnet)). The units read their inputs from `values`, and the stacks below wire them together.
+Each Azure module listed above has a matching unit in [units/azure](/units/azure) (e.g. [azure/vnet](/units/azure/vnet)). The units read their inputs from `values`, and the stacks below wire them together.
 
 ### Terragrunt Stacks
 
 - [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service): An example Terragrunt stack that provisions an EC2 ASG service with an Application Load Balancer (ALB) in front of it, and a MySQL database for state storage. This stack is intended to be provisioned multiple times across multiple environments. Setting the optional `enable_alarms` value to `true` adds CloudWatch alarms on the ALB.
-- [azure-network](/stacks/azure-network): An example Terragrunt stack that provisions a resource group, a virtual network with subnets, and a network security group attached to every subnet. Each entry in the optional `inbound_rules` value adds a rule to the network security group.
-- [azure-app-foundation](/stacks/azure-app-foundation): An example Terragrunt stack that provisions what an application needs before it runs: a storage account with a blob container and a table, a container registry, and a managed identity that can pull images, read blobs, and read and write table rows. Setting the optional `enable_alerts` value to `true` adds Azure Monitor alerts on the storage account.
+- [azure/network](/stacks/azure/network): An example Terragrunt stack that provisions a resource group, a virtual network with subnets, and a network security group attached to every subnet. Each entry in the optional `inbound_rules` value adds a rule to the network security group.
+- [azure/app-foundation](/stacks/azure/app-foundation): An example Terragrunt stack that provisions what an application needs before it runs: a storage account with a blob container and a table, a container registry, and a managed identity that can pull images, read blobs, and read and write table rows. Setting the optional `enable_alerts` value to `true` adds Azure Monitor alerts on the storage account.
 
 ### Examples
 

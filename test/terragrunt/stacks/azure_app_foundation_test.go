@@ -23,7 +23,7 @@ func TestStackAzureAppFoundation(t *testing.T) {
 	resourceGroupName := namePrefix + "app-rg"
 
 	terraformOptions := &terraform.Options{
-		TerraformDir:    "../../../examples/terragrunt/azure/stacks/azure-app-foundation",
+		TerraformDir:    "../../../examples/terragrunt/azure/stacks/app-foundation",
 		TerraformBinary: "terragrunt",
 		EnvVars: map[string]string{
 			"TG_AZURE_NAME_PREFIX": namePrefix,

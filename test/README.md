@@ -39,9 +39,5 @@ The Azure tests carry the `azure` build tag, so the commands above skip them.
    ```
 
 Every Azure test puts its resources in a resource group whose name starts with `tgcattest`, and destroys it when the
-test finishes. To delete resource groups that a cancelled or crashed run left behind:
-
-```bash
-scripts/cleanup-azure.sh            # list leftovers older than 3 hours
-scripts/cleanup-azure.sh --delete   # delete them
-```
+test finishes. A cancelled or crashed run can't do that, so before the Azure tests start, they delete every `tgcattest`
+resource group older than 3 hours. No test runs that long, so this never touches a test that is still running.

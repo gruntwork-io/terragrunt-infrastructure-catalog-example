@@ -294,12 +294,7 @@ The Azure tests carry the `azure` [build tag](https://pkg.go.dev/cmd/go#hdr-Buil
 
 The stack tests keep their state in a storage account named `tgcatalogtfstate` in the `terragrunt-catalog-example-tfstate` resource group, and create it on the first run. Storage account names are unique across all of Azure, so set `TG_STORAGE_ACCOUNT_PREFIX` to a short prefix of lowercase letters and digits (e.g. `acme`) if that name is taken.
 
-Each test puts its resources in a resource group whose name starts with `tgcattest`, destroys it when it finishes, and then checks the resource group is gone. If a run is cancelled or crashes before it can clean up, delete the leftovers from the same [test](/test) directory with:
-
-```bash
-scripts/cleanup-azure.sh            # list resource groups older than 3 hours that the tests left behind
-scripts/cleanup-azure.sh --delete   # delete them
-```
+Each test puts its resources in a resource group whose name starts with `tgcattest`, destroys it when it finishes, and then checks the resource group is gone. A run that is cancelled or crashes can't clean up, so before the tests start, they delete every `tgcattest` resource group older than 3 hours. No test runs that long, so this never touches a test that is still running.
 
 ### Updating Terragrunt units and stacks
 

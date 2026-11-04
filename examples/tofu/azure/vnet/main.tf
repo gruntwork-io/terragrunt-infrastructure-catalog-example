@@ -9,7 +9,6 @@ terraform {
   }
 }
 
-# The provider reads the subscription from the ARM_SUBSCRIPTION_ID environment variable.
 provider "azurerm" {
   features {}
 }

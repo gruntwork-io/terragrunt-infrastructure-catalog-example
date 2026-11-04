@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # CREATE AN ACTION GROUP FOR ALERT NOTIFICATIONS
-# Add email receivers (or wire up a paging service) to get notified when an alert fires.
+# Add email receivers (or connect a paging service) to get notified when an alert fires.
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "azurerm_monitor_action_group" "alerts" {

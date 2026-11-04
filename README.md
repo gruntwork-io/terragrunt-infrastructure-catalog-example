@@ -54,6 +54,7 @@ To use this repository, you'll want to make sure you have the following installe
 - [OpenTofu](https://opentofu.org/docs/intro/install/) (or [Terraform](https://developer.hashicorp.com/terraform/install))
 - [Go](https://go.dev/doc/install)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) (only for the Azure patterns, to log in with `az login`)
+- [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) (only for the GCP patterns, to log in with `gcloud auth application-default login`)
 
 > [!IMPORTANT]
 >
@@ -102,6 +103,16 @@ Azure:
 - [azure/storage-table](/modules/azure/storage-table): An example OpenTofu module that provisions a table in Azure Table Storage.
 - [azure/vnet](/modules/azure/vnet): An example OpenTofu module that provisions a virtual network and its subnets.
 
+GCP:
+
+- [gcp/artifact-registry](/modules/gcp/artifact-registry): An example OpenTofu module that provisions an Artifact Registry repository.
+- [gcp/firestore-database](/modules/gcp/firestore-database): An example OpenTofu module that provisions a Firestore database in Native mode.
+- [gcp/firewall-rule](/modules/gcp/firewall-rule): An example OpenTofu module that provisions a VPC firewall rule.
+- [gcp/monitoring-alerts](/modules/gcp/monitoring-alerts): An example OpenTofu module that provisions Cloud Monitoring alert policies for a resource, and email notification channels for them.
+- [gcp/service-account](/modules/gcp/service-account): An example OpenTofu module that provisions a service account and grants it roles on the project, buckets and Artifact Registry repositories.
+- [gcp/storage-bucket](/modules/gcp/storage-bucket): An example OpenTofu module that provisions a private Cloud Storage bucket.
+- [gcp/vpc](/modules/gcp/vpc): An example OpenTofu module that provisions a VPC network and its subnets.
+
 ### Terragrunt Units
 
 - [alb-alarms](/units/alb-alarms): An example Terragrunt unit that provisions CloudWatch alarms for an ALB.
@@ -117,13 +128,15 @@ Azure:
 - [sg-to-db-sg-rule](/units/sg-to-db-sg-rule): An example Terragrunt unit that provisions a security group rule for database access.
 - [dynamodb-table](/units/dynamodb-table): An example Terragrunt unit that provisions a DynamoDB table.
 
-Each Azure module listed above has a matching unit in [units/azure](/units/azure) (e.g. [azure/vnet](/units/azure/vnet)). The units read their inputs from `values`, and the stacks below wire them together.
+Each Azure module listed above has a matching unit in [units/azure](/units/azure) (e.g. [azure/vnet](/units/azure/vnet)), and each GCP module has one in [units/gcp](/units/gcp) (e.g. [gcp/vpc](/units/gcp/vpc)). The units read their inputs from `values`, and the stacks below connect them.
 
 ### Terragrunt Stacks
 
 - [ec2-asg-stateful-service](/stacks/ec2-asg-stateful-service): An example Terragrunt stack that provisions an EC2 ASG service with an Application Load Balancer (ALB) in front of it, and a MySQL database for state storage. This stack is intended to be provisioned multiple times across multiple environments. Setting the optional `enable_alarms` value to `true` adds CloudWatch alarms on the ALB.
 - [azure/network](/stacks/azure/network): An example Terragrunt stack that provisions a resource group, a virtual network with subnets, and a network security group attached to every subnet. Each entry in the optional `inbound_rules` value adds a rule to the network security group.
 - [azure/app-foundation](/stacks/azure/app-foundation): An example Terragrunt stack that provisions what an application needs before it runs: a storage account with a blob container and a table, a container registry, and a managed identity that can pull images, read blobs, and read and write table rows. Setting the optional `enable_alerts` value to `true` adds Azure Monitor alerts on the storage account.
+- [gcp/network](/stacks/gcp/network): An example Terragrunt stack that provisions a VPC network with subnets. Each entry in the optional `inbound_rules` value adds a firewall rule to the network.
+- [gcp/app-foundation](/stacks/gcp/app-foundation): An example Terragrunt stack that provisions what an application needs before it runs: a Cloud Storage bucket, a Firestore database, an Artifact Registry repository, and a service account that can pull images, read objects in the bucket, and read and write documents in the database. Setting the optional `enable_alerts` value to `true` adds Cloud Monitoring alerts on the bucket.
 
 ### Examples
 
@@ -237,11 +250,12 @@ This is a general guide for how you can update the components in this repository
 Now that you've given the module a quick sanity check, you can update the appropriate [Terratest](https://terratest.gruntwork.io/) test in the [test/tofu](/test/tofu) directory to ensure that the module continues to work as expected in the future.
 
 1. Navigate to the [test/tofu](/test/tofu) directory.
-2. Run `go test -timeout 60m -count=1 -run Test<Something>` to run the test you just updated.
+2. Run `go test -tags aws -timeout 60m -count=1 -run Test<Something>` to run the test you just updated.
 
    Explanation of the command:
 
    - `go test`: Run the test as a standard [Golang test](https://pkg.go.dev/testing).
+   - `-tags aws`: Build the AWS tests, which only build with the `aws` [build tag](https://pkg.go.dev/cmd/go#hdr-Build_constraints). The Azure and GCP tests use the `azure` and `gcp` tags instead.
    - `-timeout 60m`: Give the test 60 minutes to complete (you can adjust this depending on the expected runtime of the test).
    - `-count=1`: Run the test exactly once (Golang tests are automatically opted out of caching when using the `-count` flag, so this is a simple way to ensure that caching doesn't result in false positives).
    - `-run Test<Something>`: Run the test named `Test<Something>`. If you'd like to run all tests in a directory, you can omit this flag, and if you'd like to run all tests recursively, you can pass `./...` as the final argument to `go test` instead.
@@ -268,7 +282,7 @@ You can run the Terratests for these examples in the same way as the module test
 e.g.
 
 ```bash
-TG_BUCKET_PREFIX='acme-' go test -timeout 60m -count=1 -run Test<Something>
+TG_BUCKET_PREFIX='acme-' go test -tags aws -timeout 60m -count=1 -run Test<Something>
 ```
 
 > [!IMPORTANT]
@@ -278,7 +292,7 @@ Testing OpenTofu/Terraform modules as Terragrunt units is useful to ensure that 
 
 ### Testing the Azure patterns
 
-The Azure tests carry the `azure` [build tag](https://pkg.go.dev/cmd/go#hdr-Build_constraints), so a plain `go test ./...` skips them. To run them:
+To run the Azure tests:
 
 1. Log in with `az login`, select the subscription to deploy into with `az account set`, and export its ID:
 
@@ -289,12 +303,45 @@ The Azure tests carry the `azure` [build tag](https://pkg.go.dev/cmd/go#hdr-Buil
 2. Run the tests with the `azure` tag from the [test](/test) directory:
 
    ```bash
-   go test -tags azure -timeout 60m -count=1 -run Azure ./...
+   go test -tags azure -timeout 60m -count=1 ./...
    ```
 
 The stack tests keep their state in a storage account named `tgcatalogtfstate` in the `terragrunt-catalog-example-tfstate` resource group, and create it on the first run. Storage account names are unique across all of Azure, so set `TG_STORAGE_ACCOUNT_PREFIX` to a short prefix of lowercase letters and digits (e.g. `acme`) if that name is taken.
 
-Each test puts its resources in a resource group whose name starts with `tgcattest`, destroys it when it finishes, and then checks the resource group is gone. A run that is cancelled or crashes can't clean up, so before the tests start, they delete every `tgcattest` resource group older than 3 hours. No test runs that long, so this never touches a test that is still running.
+Each test puts its resources in a resource group whose name starts with `tgcattest`, destroys it when it finishes, and then checks the resource group is gone. A run that is cancelled or crashes can't clean up, so before the tests start, they delete every `tgcattest` resource group older than 3 hours. The commands above stop the tests after 60 minutes, so the cleanup never deletes the resources of a test that is still running.
+
+### Testing the GCP patterns
+
+To run the GCP tests:
+
+1. Log in with `gcloud auth application-default login`, select the project to deploy into with `gcloud config set project`, and export its ID:
+
+   ```bash
+   export GOOGLE_CLOUD_PROJECT="$(gcloud config get-value project)"
+   ```
+
+2. Enable the APIs the tests use:
+
+   ```bash
+   gcloud services enable \
+     artifactregistry.googleapis.com \
+     cloudresourcemanager.googleapis.com \
+     compute.googleapis.com \
+     firestore.googleapis.com \
+     iam.googleapis.com \
+     monitoring.googleapis.com \
+     storage.googleapis.com
+   ```
+
+3. Run the tests with the `gcp` tag from the [test](/test) directory:
+
+   ```bash
+   go test -tags gcp -timeout 60m -count=1 ./...
+   ```
+
+To run the Azure and GCP tests in one go, pass both tags: `go test -tags azure,gcp -timeout 60m -count=1 ./...`.
+
+Every resource a test creates has a name that starts with `tgcattest`, followed by the minute the test started. Each test destroys its resources when it finishes, and then checks that none are left. A run that is cancelled or crashes can't clean up, so before the tests start, they delete every `tgcattest` resource older than 3 hours, and remove the project IAM grants of `tgcattest` service accounts. The commands above stop the tests after 60 minutes, so the cleanup never deletes the resources of a test that is still running.
 
 ### Updating Terragrunt units and stacks
 

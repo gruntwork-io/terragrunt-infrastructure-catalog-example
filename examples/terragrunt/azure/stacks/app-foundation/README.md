@@ -3,7 +3,7 @@
 This is an example of how to use the [azure/app-foundation](/stacks/azure/app-foundation) stack. It provisions the
 pieces an application needs before it can run:
 
-- [azure/resource-group](/units/azure/resource-group) - Creates the resource group that holds everything else
+- [azure/resource-group](/units/azure/resource-group) - Creates the resource group that contains everything else
 - [azure/storage-account](/units/azure/storage-account) - Creates a storage account with a private `data` blob container
 - [azure/storage-table](/units/azure/storage-table) - Creates an `items` table in the storage account
 - [azure/container-registry](/units/azure/container-registry) - Creates a Basic container registry for the app's images

@@ -72,6 +72,9 @@ jobs:
           <<: *install_tofu
       - run:
           name: run tests
+          environment:
+            # The AWS tests only build with the aws build tag.
+            GOFLAGS: -tags=aws
           command: |
             mkdir -p /tmp/logs
             # Believe it or not, we've seen the tee command fail when we have too much logging all happening at once.

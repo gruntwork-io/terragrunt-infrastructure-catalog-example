@@ -1,3 +1,5 @@
+//go:build aws
+
 package terragrunt_units_test
 
 import (

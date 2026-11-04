@@ -165,3 +165,9 @@ func response(req *http.Request, status int, body string) *http.Response {
 		Request:    req,
 	}
 }
+
+func TestSweepWithoutSubscriptionID(t *testing.T) {
+	t.Setenv("ARM_SUBSCRIPTION_ID", "")
+
+	require.ErrorIs(t, azuretest.Sweep(), azuretest.ErrNoSubscriptionID)
+}

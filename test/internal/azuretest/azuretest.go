@@ -1,9 +1,11 @@
-// Package azuretest holds helpers shared by the Azure tests.
+// Package azuretest provides helpers shared by the Azure tests.
 package azuretest
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"math/rand/v2"
 	"net/http"
 	"net/url"
 	"os"
@@ -16,7 +18,6 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/gruntwork-io/terratest/modules/azure"
-	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/stretchr/testify/require"
 )
 
@@ -25,13 +26,17 @@ import (
 const NamePrefix = "tgcattest"
 
 // StaleAge is how old a test resource group must be before DeleteStaleResourceGroups deletes it.
-// No test runs this long, so an older resource group belongs to a run that was cancelled or crashed.
+// The READMEs run the tests with -timeout 60m, so an older resource group belongs to a run that was cancelled or crashed.
 const StaleAge = 3 * time.Hour
+
+// ErrNoSubscriptionID is returned by [Sweep] when ARM_SUBSCRIPTION_ID is unset.
+var ErrNoSubscriptionID = errors.New("set ARM_SUBSCRIPTION_ID to the subscription the Azure tests deploy into")
 
 const (
 	subscriptionIDEnvVar     = "ARM_SUBSCRIPTION_ID"
 	resourceGroupsAPIVersion = "2021-04-01"
 	maxResourceGroupPages    = 100
+	randomDigits             = 6
 )
 
 // SubscriptionID returns the subscription the tests deploy into, read from ARM_SUBSCRIPTION_ID.
@@ -47,7 +52,7 @@ func SubscriptionID(t *testing.T) string {
 // UniqueName returns a name that starts with NamePrefix and only uses lowercase letters and digits,
 // so it is also valid for storage accounts and container registries.
 func UniqueName() string {
-	return NamePrefix + strings.ToLower(random.UniqueId())
+	return NamePrefix + randomDigitsString(randomDigits)
 }
 
 // RequireResourceGroupDeleted fails the test if the resource group still exists.
@@ -64,35 +69,28 @@ func RequireResourceGroupDeleted(t *testing.T, resourceGroupName, subscriptionID
 	)
 }
 
-// RunTests deletes stale test resource groups, then runs the tests and returns their exit code.
-// Every package with Azure tests calls it from TestMain, so each run cleans up after cancelled or crashed runs.
-func RunTests(m *testing.M) int {
+// Sweep deletes stale test resource groups and prints the name of each one.
+func Sweep() error {
 	subscriptionID := os.Getenv(subscriptionIDEnvVar)
 	if subscriptionID == "" {
-		fmt.Fprintln(os.Stderr, "set ARM_SUBSCRIPTION_ID to the subscription the Azure tests deploy into")
-
-		return 1
+		return ErrNoSubscriptionID
 	}
 
 	cred, err := newCredential()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "loading Azure credentials, log in with `az login`: %v\n", err)
-
-		return 1
+		return fmt.Errorf("loading Azure credentials, log in with `az login`: %w", err)
 	}
 
 	deleted, err := DeleteStaleResourceGroups(context.Background(), subscriptionID, cred, nil)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "deleting stale test resource groups: %v\n", err)
-
-		return 1
+		return fmt.Errorf("deleting stale test resource groups: %w", err)
 	}
 
 	for _, name := range deleted {
 		fmt.Printf("Started deleting resource group %s, which a cancelled or crashed test run left behind\n", name)
 	}
 
-	return m.Run()
+	return nil
 }
 
 // DeleteStaleResourceGroups starts deleting every resource group whose name starts with NamePrefix and that is
@@ -276,4 +274,16 @@ func deleteResourceGroup(ctx context.Context, client *arm.Client, subscriptionID
 	runtime.Drain(resp)
 
 	return nil
+}
+
+const base36Digits = "0123456789abcdefghijklmnopqrstuvwxyz"
+
+// randomDigitsString returns n random base-36 digits.
+func randomDigitsString(n int) string {
+	digits := make([]byte, n)
+	for i := range digits {
+		digits[i] = base36Digits[rand.IntN(len(base36Digits))]
+	}
+
+	return string(digits)
 }

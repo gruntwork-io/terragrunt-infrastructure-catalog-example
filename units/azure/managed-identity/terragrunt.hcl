@@ -7,7 +7,7 @@ terraform {
   update_source_with_cas = true
 }
 
-# The stack wires in `resource_group_name` and `role_assignments` from the units the identity needs access to.
+# The stack passes in `resource_group_name` and `role_assignments` from the units the identity needs access to.
 inputs = {
   # Required inputs
   name     = values.name

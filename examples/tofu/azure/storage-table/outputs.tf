@@ -1,15 +1,19 @@
 output "resource_group_name" {
-  value = module.resource_group.name
+  description = "The name of the resource group"
+  value       = module.resource_group.name
 }
 
 output "storage_account_name" {
-  value = module.storage_account.name
+  description = "The name of the storage account"
+  value       = module.storage_account.name
 }
 
 output "name" {
-  value = module.storage_table.name
+  description = "The name of the table"
+  value       = module.storage_table.name
 }
 
 output "id" {
-  value = module.storage_table.id
+  description = "The ID of the table"
+  value       = module.storage_table.id
 }

@@ -1,3 +1,5 @@
+//go:build aws
+
 package terragrunt_stacks_test
 
 import (

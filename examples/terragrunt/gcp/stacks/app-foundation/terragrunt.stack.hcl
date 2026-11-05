@@ -18,5 +18,9 @@ stack "app" {
     location = "us-east1"
 
     enable_alerts = true
+
+    // Do NOT copy this into product code. We only set this value to false here
+    // so that the automated tests can clean up.
+    enable_delete_protection = false
   }
 }

@@ -13,5 +13,5 @@ inputs = {
   location = values.location
 
   # Optional inputs
-  enable_delete_protection = try(values.enable_delete_protection, false)
+  enable_delete_protection = try(values.enable_delete_protection, true)
 }

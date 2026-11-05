@@ -2,7 +2,7 @@
 
 This is an example of how to use the [azure/network](/stacks/azure/network) stack, which provisions the following units:
 
-- [azure/resource-group](/units/azure/resource-group) - Creates the resource group that holds everything else
+- [azure/resource-group](/units/azure/resource-group) - Creates the resource group that contains everything else
 - [azure/vnet](/units/azure/vnet) - Creates a virtual network with a `private` and a `public` subnet
 - [azure/nsg](/units/azure/nsg) - Creates a network security group and attaches it to both subnets
 - [azure/nsg-rule](/units/azure/nsg-rule) - Allows inbound HTTPS from the internet, one unit per entry in `inbound_rules`

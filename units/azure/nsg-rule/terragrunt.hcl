@@ -7,7 +7,7 @@ terraform {
   update_source_with_cas = true
 }
 
-# The stack wires in `resource_group_name` and `network_security_group_name` from the resource group and NSG units.
+# The stack passes in `resource_group_name` and `network_security_group_name` from the resource group and NSG units.
 inputs = {
   # Required inputs
   name                   = values.name

@@ -5,6 +5,11 @@
 variable "name" {
   description = "The name of the container registry. Must be 5-50 letters and digits, and unique across all of Azure. The resource group is named after it."
   type        = string
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9]{5,50}$", var.name))
+    error_message = "name must be 5-50 letters and digits."
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

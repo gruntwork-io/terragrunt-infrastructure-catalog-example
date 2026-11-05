@@ -7,7 +7,7 @@ terraform {
   update_source_with_cas = true
 }
 
-# The stack wires in `resource_group_name` from the resource group unit.
+# The stack passes in `resource_group_name` from the resource group unit.
 inputs = {
   # Required inputs
   name     = values.name

@@ -22,7 +22,7 @@ variable "location" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "enable_delete_protection" {
-  description = "If set to true, GCP refuses to delete the database, so destroying it fails until this is set back to false."
+  description = "If set to true, GCP refuses to delete the database, so destroying it fails until this is set to false and applied."
   type        = bool
-  default     = false
+  default     = true
 }

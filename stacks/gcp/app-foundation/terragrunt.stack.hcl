@@ -31,6 +31,8 @@ unit "database" {
   values = {
     name     = "${local.name}-db"
     location = local.location
+
+    enable_delete_protection = try(values.enable_delete_protection, true)
   }
 }
 

@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [gcp]
+-->
+
 # GCP Firewall Rule Module
 
 This is an example OpenTofu/Terraform module that creates a [VPC firewall rule](https://cloud.google.com/firewall/docs/firewalls). See the

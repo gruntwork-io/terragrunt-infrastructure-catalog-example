@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Network Security Rule Module
 
 This is an example OpenTofu/Terraform module that creates a rule in an [Azure network security group](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview). See the

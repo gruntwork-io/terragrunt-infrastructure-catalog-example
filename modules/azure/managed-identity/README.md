@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Managed Identity Module
 
 This is an example OpenTofu/Terraform module that creates a [user-assigned managed identity](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview) and grants it roles on other resources. See the

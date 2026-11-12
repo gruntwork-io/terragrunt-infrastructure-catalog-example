@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Container Registry Module
 
 This is an example OpenTofu/Terraform module that creates an [Azure Container Registry](https://learn.microsoft.com/azure/container-registry/container-registry-intro). See the

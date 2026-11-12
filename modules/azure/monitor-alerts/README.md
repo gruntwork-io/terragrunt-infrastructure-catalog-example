@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Monitor Alerts Module
 
 This is an example OpenTofu/Terraform module that creates [Azure Monitor metric alerts](https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-metric-overview) for a resource, and an action group for their notifications. See the

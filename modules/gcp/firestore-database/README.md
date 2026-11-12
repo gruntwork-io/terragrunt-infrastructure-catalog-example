@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [gcp]
+-->
+
 # GCP Firestore Database Module
 
 This is an example OpenTofu/Terraform module that creates a [Firestore database](https://cloud.google.com/firestore/docs/overview) in Native mode. See the

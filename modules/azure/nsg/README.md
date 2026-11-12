@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Network Security Group Module
 
 This is an example OpenTofu/Terraform module that creates an [Azure network security group](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview) and optionally attaches it to subnets. See the

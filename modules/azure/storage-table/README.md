@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Storage Table Module
 
 This is an example OpenTofu/Terraform module that creates a table in [Azure Table Storage](https://learn.microsoft.com/azure/storage/tables/table-storage-overview). See the

@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [gcp]
+-->
+
 # GCP Storage Bucket Module
 
 This is an example OpenTofu/Terraform module that creates a private [Cloud Storage bucket](https://cloud.google.com/storage/docs/buckets). See the

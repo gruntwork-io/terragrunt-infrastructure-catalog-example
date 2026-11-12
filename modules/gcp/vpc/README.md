@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [gcp]
+-->
+
 # GCP VPC Network Module
 
 This is an example OpenTofu/Terraform module that creates a [VPC network](https://cloud.google.com/vpc/docs/vpc) and its subnets. See the

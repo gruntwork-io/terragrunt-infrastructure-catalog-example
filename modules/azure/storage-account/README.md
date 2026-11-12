@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Storage Account Module
 
 This is an example OpenTofu/Terraform module that creates an [Azure storage account](https://learn.microsoft.com/azure/storage/common/storage-account-overview) and private blob containers in it. See the

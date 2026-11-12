@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [gcp]
+-->
+
 # GCP Artifact Registry Module
 
 This is an example OpenTofu/Terraform module that creates an [Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/overview). See the

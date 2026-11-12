@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [gcp]
+-->
+
 # GCP Service Account Module
 
 This is an example OpenTofu/Terraform module that creates a [service account](https://cloud.google.com/iam/docs/service-account-overview) and grants it roles on other resources. See the

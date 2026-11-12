@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Virtual Network Module
 
 This is an example OpenTofu/Terraform module that creates an [Azure virtual network](https://learn.microsoft.com/azure/virtual-network/virtual-networks-overview) and its subnets. See the

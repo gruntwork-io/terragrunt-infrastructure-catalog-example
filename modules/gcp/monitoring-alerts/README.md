@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [gcp]
+-->
+
 # GCP Monitoring Alerts Module
 
 This is an example OpenTofu/Terraform module that creates [Cloud Monitoring alert policies](https://cloud.google.com/monitoring/alerts) for a resource, and email notification channels for them. See the

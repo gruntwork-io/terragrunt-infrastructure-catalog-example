@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [azure]
+-->
+
 # Azure Resource Group Module
 
 This is an example OpenTofu/Terraform module that creates an [Azure resource group](https://learn.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-portal). See the

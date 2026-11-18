@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [aws]
+-->
+
 # DynamoDB Table Module
 
 This is an example OpenTofu/Terraform module that deploys a [DynamoDB Table](https://aws.amazon.com/dynamodb/).

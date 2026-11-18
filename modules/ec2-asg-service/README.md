@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [aws]
+-->
+
 # ASG with ALB Module
 
 This is an example OpenTofu/Terraform module that deploys an [Auto Scaling Group (ASG)](https://aws.amazon.com/autoscaling/)

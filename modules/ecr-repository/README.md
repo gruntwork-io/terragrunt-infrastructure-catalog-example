@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [aws]
+-->
+
 # ECR Repository Module
 
 This is an example OpenTofu/Terraform module that deploys an [ECR Repository](https://aws.amazon.com/ecr/).

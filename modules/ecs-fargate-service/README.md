@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [aws]
+-->
+
 # ECS Fargate Service Module
 
 This is an example OpenTofu/Terraform module that deploys an [ECS Fargate Service](https://aws.amazon.com/ecs/) with an

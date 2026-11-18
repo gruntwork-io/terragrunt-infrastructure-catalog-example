@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [aws]
+-->
+
 # MySQL on RDS Module
 
 This is an example OpenTofu/Terraform module that deploys a MySQL database using [Amazon's Relational Database Service

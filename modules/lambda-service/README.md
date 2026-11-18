@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [aws]
+-->
+
 # Lambda Service Module
 
 This is an example OpenTofu/Terraform module that deploys a [Lambda function](https://aws.amazon.com/lambda/) with an

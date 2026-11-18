@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [aws]
+-->
+
 # IAM Role Module
 
 This is an example OpenTofu/Terraform module that deploys an [IAM role](https://aws.amazon.com/iam).

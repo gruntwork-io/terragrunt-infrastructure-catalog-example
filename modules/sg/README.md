@@ -1,3 +1,7 @@
+<!-- Frontmatter
+tags: [aws]
+-->
+
 # Security Group (SG) Module
 
 This is a convenience module for creating security groups.
